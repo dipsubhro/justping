@@ -1,0 +1,30 @@
+# Binaries
+/bin/
+/dist/
+main
+app
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Go
+vendor/
+go.work
+go.work.sum
+
+# Environments
+.env
+.env.local
+
+# Logs
+*.log
+
+# Docker
+docker-compose.override.yml
