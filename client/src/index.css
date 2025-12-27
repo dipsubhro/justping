@@ -5,16 +5,38 @@
 }
 
 :root {
-  --bg-black: #000000;
-  --accent-yellow: #FFF44F;
+  /* Foundation colors - Forest Sentinel Theme */
+  --bg-background: #0A0D0C;
+  --bg-surface: #141A18;
+  --border-color: #232E2B;
+
+  /* Status colors */
+  --status-success: #00C853;
+  --status-critical: #FF5252;
+  --status-warning: #FFB300;
+
+  /* Typography */
+  --text-primary: #F5F5F0;
+  --text-secondary: #94A3B8;
+
+  /* Accent (selection & highlights) */
+  --accent-emerald: #50C878;
+  --accent-emerald-bright: #00C853;
+
+  /* Analytics colors */
+  --series-a: #50C878;
+  --series-b: #D48166;
+  --grid-lines: #1E2623;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--bg-black);
-  font-family: 'SF Mono', 'Fira Code', 'Monaco', 'Cascadia Code', monospace;
+  background-color: var(--bg-background);
+  font-family: 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif;
 }
 
 body {
@@ -23,6 +45,6 @@ body {
 }
 
 ::selection {
-  background: var(--accent-yellow);
-  color: var(--bg-black);
+  background: var(--accent-emerald);
+  color: var(--bg-background);
 }
