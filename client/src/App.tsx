@@ -17,8 +17,11 @@ interface PinnedElement {
 
 // CORS proxy to bypass cross-origin restrictions
 const CORS_PROXIES = [
+  'https://corsproxy.io/?key=d655d270&url=',
   'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
+  'https://api.codetabs.com/v1/proxy?quest=',
+  'https://thingproxy.freeboard.io/fetch/',
+  'https://cors-anywhere.herokuapp.com/',
 ];
 
 // Demo HTML content for testing without CORS issues
@@ -195,16 +198,30 @@ export default function App() {
 
   // Fetch URL content via CORS proxy
   const fetchViaProxy = useCallback(async (targetUrl: string): Promise<string> => {
+    let lastError;
+
+    console.log(`Attempting to fetch: ${targetUrl}`);
+
     for (const proxy of CORS_PROXIES) {
       try {
-        setLoadingStatus(`Fetching via proxy...`);
-        const response = await fetch(proxy + encodeURIComponent(targetUrl));
+        const proxyName = new URL(proxy).hostname;
+        const fullUrl = proxy + encodeURIComponent(targetUrl);
+        console.log(`Trying proxy: ${proxyName} -> ${fullUrl}`);
+        setLoadingStatus(`Trying proxy: ${proxyName}...`);
+
+        const response = await fetch(fullUrl);
+        console.log(`Response from ${proxyName}: ${response.status} ${response.statusText}`);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
 
         const html = await response.text();
+        console.log(`Received ${html.length} bytes from ${proxyName}`);
+
+        if (!html || html.length < 100) {
+          throw new Error('Empty or invalid response');
+        }
 
         // Rewrite relative URLs to absolute
         const baseUrl = new URL(targetUrl);
@@ -213,11 +230,12 @@ export default function App() {
         return rewrittenHtml;
       } catch (err) {
         console.warn(`Proxy ${proxy} failed:`, err);
+        lastError = err;
         continue;
       }
     }
 
-    throw new Error('All proxies failed');
+    throw lastError || new Error('All proxies failed');
   }, []);
 
   // Rewrite relative URLs in HTML to absolute URLs
