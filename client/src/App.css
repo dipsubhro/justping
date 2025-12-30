@@ -70,9 +70,9 @@
   height: 32px;
   background-color: var(--bg-background);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 20px;
   color: var(--text-primary);
-  padding: 0 12px;
+  padding: 0 16px;
   font-family: inherit;
   font-size: 13px;
   outline: none;
@@ -92,11 +92,11 @@
 /* Viewport header buttons */
 .viewport-btn {
   height: 32px;
-  padding: 0 16px;
+  padding: 0 20px;
   background: linear-gradient(135deg, var(--accent-emerald-bright) 0%, var(--accent-emerald) 100%);
   color: var(--bg-background);
   border: none;
-  border-radius: 6px;
+  border-radius: 20px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 600;
