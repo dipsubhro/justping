@@ -462,56 +462,50 @@ export default function Pinning() {
 
   return (
     <div className="app">
-      {/* URL Input Bar */}
-      <div className="url-bar">
-        <input
-          type="text"
-          className="url-input"
-          placeholder="Enter URL to inspect (e.g., google.com)..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isLoading}
-        />
-        <button
-          className="load-btn"
-          onClick={handleLoadUrl}
-          disabled={isLoading}
-        >
-          {isLoading ? '...' : 'Load'}
-        </button>
-        <button
-          className="load-btn demo-btn"
-          onClick={handleLoadDemo}
-          disabled={isLoading}
-        >
-          Demo
-        </button>
-      </div>
-
       {/* Viewport Container - centered box layout */}
       <div className="viewport-container">
-        {!loadedUrl ? (
-          <div className="viewport-box">
-            <div className="empty-state">
-              <div className="empty-state-title">Element Selector</div>
-              <div className="empty-state-text">
-                Enter a URL above or click DEMO to test
-              </div>
-              <div className="empty-state-hint">
-                Hover to highlight · Click to pin · Generate CSS selectors
-              </div>
-            </div>
+        <div className="viewport-box">
+          {/* Viewport header with URL input and buttons */}
+          <div className="viewport-header">
+            <div className={`viewport-dot ${loadedUrl && !isLoading && !error ? 'active' : ''}`} />
+            <input
+              type="text"
+              className="viewport-url-input"
+              placeholder="Enter URL to inspect (e.g., google.com)..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading}
+            />
+            <button
+              className="viewport-btn"
+              onClick={handleLoadUrl}
+              disabled={isLoading}
+            >
+              {isLoading ? '...' : 'Load'}
+            </button>
+            <button
+              className="viewport-btn demo"
+              onClick={handleLoadDemo}
+              disabled={isLoading}
+            >
+              Demo
+            </button>
           </div>
-        ) : (
-          <div className="viewport-box">
-            {/* Viewport header with URL */}
-            <div className="viewport-header">
-              <div className={`viewport-dot ${!isLoading && !error ? 'active' : ''}`} />
-              <span className="viewport-url">
-                {isDemo ? 'Demo Page' : loadedUrl}
-              </span>
+
+          {!loadedUrl ? (
+            <div className="iframe-wrapper">
+              <div className="empty-state">
+                <div className="empty-state-title">Element Selector</div>
+                <div className="empty-state-text">
+                  Enter a URL above or click DEMO to test
+                </div>
+                <div className="empty-state-hint">
+                  Hover to highlight · Click to pin · Generate CSS selectors
+                </div>
+              </div>
             </div>
+          ) : (
 
             <div className="iframe-wrapper">
               {error ? (
@@ -569,8 +563,8 @@ export default function Pinning() {
                 />
               )}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Selector Panel */}
