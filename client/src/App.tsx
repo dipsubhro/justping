@@ -471,74 +471,86 @@ export default function App() {
         </button>
       </div>
 
-      {/* Iframe Container */}
-      <div className="iframe-container">
+      {/* Viewport Container - centered box layout */}
+      <div className="viewport-container">
         {!loadedUrl ? (
-          <div className="empty-state">
-            <div className="empty-state-title">Element Selector</div>
-            <div className="empty-state-text">
-              Enter a URL above or click DEMO to test
-            </div>
-            <div className="empty-state-hint">
-              Hover to highlight · Click to pin · Generate CSS selectors
+          <div className="viewport-box">
+            <div className="empty-state">
+              <div className="empty-state-title">Element Selector</div>
+              <div className="empty-state-text">
+                Enter a URL above or click DEMO to test
+              </div>
+              <div className="empty-state-hint">
+                Hover to highlight · Click to pin · Generate CSS selectors
+              </div>
             </div>
           </div>
         ) : (
-          <div className="iframe-wrapper">
-            {error ? (
-              <div className="cors-error">
-                <div className="cors-error-title">Load Failed</div>
-                <div className="cors-error-text">
-                  {error}
-                  <br />
-                  <br />
-                  Try the DEMO button to test element selection.
+          <div className="viewport-box">
+            {/* Viewport header with URL */}
+            <div className="viewport-header">
+              <div className={`viewport-dot ${!isLoading && !error ? 'active' : ''}`} />
+              <span className="viewport-url">
+                {isDemo ? 'Demo Page' : loadedUrl}
+              </span>
+            </div>
+
+            <div className="iframe-wrapper">
+              {error ? (
+                <div className="error-state">
+                  <div className="error-state-title">Load Failed</div>
+                  <div className="error-state-text">
+                    {error}
+                    <br />
+                    <br />
+                    Try the DEMO button to test element selection.
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <iframe
-                ref={iframeRef}
-                className="site-iframe"
-                src="about:blank"
-                onLoad={handleIframeLoad}
-                sandbox="allow-same-origin allow-scripts allow-forms"
-                title="Website Preview"
-              />
-            )}
+              ) : (
+                <iframe
+                  ref={iframeRef}
+                  className="site-iframe"
+                  src="about:blank"
+                  onLoad={handleIframeLoad}
+                  sandbox="allow-same-origin allow-scripts allow-forms"
+                  title="Website Preview"
+                />
+              )}
 
-            {isLoading && (
-              <div className="loading-indicator">
-                {loadingStatus || 'Loading...'}
-              </div>
-            )}
+              {isLoading && (
+                <div className="loading-indicator">
+                  {loadingStatus || 'Loading...'}
+                </div>
+              )}
 
-            {/* Hover highlight */}
-            {hoverRect && !pinnedElement && (
-              <div
-                className="highlight-box"
-                style={{
-                  top: hoverRect.top,
-                  left: hoverRect.left,
-                  width: hoverRect.width,
-                  height: hoverRect.height,
-                  position: 'fixed',
-                }}
-              />
-            )}
+              {/* Hover highlight */}
+              {hoverRect && !pinnedElement && (
+                <div
+                  className="highlight-box"
+                  style={{
+                    top: hoverRect.top,
+                    left: hoverRect.left,
+                    width: hoverRect.width,
+                    height: hoverRect.height,
+                    position: 'fixed',
+                  }}
+                />
+              )}
 
-            {/* Pinned highlight */}
-            {pinnedElement && (
-              <div
-                className="highlight-box pinned"
-                style={{
-                  top: pinnedElement.rect.top,
-                  left: pinnedElement.rect.left,
-                  width: pinnedElement.rect.width,
-                  height: pinnedElement.rect.height,
-                  position: 'fixed',
-                }}
-              />
-            )}
+              {/* Pinned highlight */}
+              {pinnedElement && (
+                <div
+                  className="highlight-box pinned"
+                  style={{
+                    top: pinnedElement.rect.top,
+                    left: pinnedElement.rect.left,
+                    width: pinnedElement.rect.width,
+                    height: pinnedElement.rect.height,
+                    position: 'fixed',
+                  }}
+                />
+              )}
+            </div>
           </div>
         )}
       </div>
