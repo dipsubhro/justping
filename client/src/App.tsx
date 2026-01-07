@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
-import Pinning from './pages/Pinning';
+import ElementSelector from './components/ElementSelector';
 import Navigate from './pages/Navigate';
+import DashboardHome from './pages/DashboardHome';
 import './index.css';
 
 export default function App() {
@@ -9,10 +10,10 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/pinning" element={<Pinning />} />
-        <Route path="/navigate" element={<Navigate />} />
-        {/* <Route path="/pricing" element={<ComingSoon page="Pricing" />} />
-        <Route path="/dashboard" element={<ComingSoon page="Dashboard" />} /> */}
+        <Route path="/navigate" element={<Navigate />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="pinning" element={<ElementSelector />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -75,7 +75,7 @@ const DEMO_HTML = `
 </html>
 `;
 
-export default function Pinning() {
+export default function ElementSelector() {
   const [url, setUrl] = useState('');
   const [loadedUrl, setLoadedUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
