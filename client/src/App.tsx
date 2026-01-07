@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Pinning from './pages/Pinning';
+import Navigate from './pages/Navigate';
 import './index.css';
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/pinning" element={<Pinning />} />
+        <Route path="/navigate" element={<Navigate />} />
         {/* <Route path="/pricing" element={<ComingSoon page="Pricing" />} />
         <Route path="/dashboard" element={<ComingSoon page="Dashboard" />} /> */}
       </Routes>
