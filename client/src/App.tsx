@@ -4,6 +4,7 @@ import ElementSelector from './components/ElementSelector';
 import Navigate from './pages/Navigate';
 import DashboardHome from './pages/DashboardHome';
 import Billing from './pages/Billing';
+import Alerts from './pages/Alerts';
 import './index.css';
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route index element={<DashboardHome />} />
           <Route path="pinning" element={<ElementSelector />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="alerts" element={<Alerts />} />
         </Route>
       </Routes>
     </BrowserRouter>

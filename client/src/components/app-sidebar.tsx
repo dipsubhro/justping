@@ -33,7 +33,7 @@ const mainItems = [
     { title: "Add Monitor", url: "/navigate/pinning", icon: Pin },
     { title: "Change History", url: "#", icon: History },
     { title: "Analytics", url: "#", icon: BarChart },
-    { title: "Alerts", url: "#", icon: Bell },
+    { title: "Alerts", url: "/navigate/alerts", icon: Bell },
 ]
 
 const configItems = [
