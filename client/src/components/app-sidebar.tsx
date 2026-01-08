@@ -43,7 +43,7 @@ const configItems = [
 
 const userItems = [
     { title: "Profile", url: "#", icon: User },
-    { title: "Billing", url: "#", icon: CreditCard },
+    { title: "Billing", url: "/navigate/billing", icon: CreditCard },
     { title: "Help", url: "#", icon: HelpCircle },
     { title: "Logout", url: "#", icon: LogOut },
 ]

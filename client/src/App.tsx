@@ -3,6 +3,7 @@ import Landing from './pages/Landing';
 import ElementSelector from './components/ElementSelector';
 import Navigate from './pages/Navigate';
 import DashboardHome from './pages/DashboardHome';
+import Billing from './pages/Billing';
 import './index.css';
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/navigate" element={<Navigate />}>
           <Route index element={<DashboardHome />} />
           <Route path="pinning" element={<ElementSelector />} />
+          <Route path="billing" element={<Billing />} />
         </Route>
       </Routes>
     </BrowserRouter>
