@@ -23,7 +23,7 @@ export default function Navigate() {
                         <Button variant="outline" size="sm">Feedback</Button>
                     </div>
                 </header>
-                <div className="flex-1 overflow-auto min-w-0">
+                <div className="flex-1 flex flex-col overflow-hidden min-w-0">
                     <Outlet />
                 </div>
             </SidebarInset>
