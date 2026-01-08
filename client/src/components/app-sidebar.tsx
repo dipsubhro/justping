@@ -30,7 +30,7 @@ import {
 const mainItems = [
     { title: "Dashboard", url: "/navigate", icon: Home },
     { title: "Monitors", url: "#", icon: Monitor },
-    { title: "Add Monitor (Pin)", url: "/navigate/pinning", icon: Pin },
+    { title: "Add Monitor", url: "/navigate/pinning", icon: Pin },
     { title: "Change History", url: "#", icon: History },
     { title: "Analytics", url: "#", icon: BarChart },
     { title: "Alerts", url: "#", icon: Bell },

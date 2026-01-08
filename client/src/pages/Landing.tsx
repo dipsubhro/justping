@@ -13,7 +13,7 @@ export default function Landing() {
                     Track price changes, stock availability, content updates, and more.
                     Get notified instantly when something changes.
                 </p>
-                <Link to="/pinning" className="cta-button">
+                <Link to="/navigate" className="cta-button">
                     Get Started
                 </Link>
             </div>
