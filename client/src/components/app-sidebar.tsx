@@ -54,7 +54,7 @@ export function AppSidebar() {
             <SidebarContent>
                 {/* Main Group */}
                 <SidebarGroup>
-                    <SidebarGroupLabel>DeepPing</SidebarGroupLabel>
+                    <SidebarGroupLabel>JustPing</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {mainItems.map((item) => (

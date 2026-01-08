@@ -172,8 +172,7 @@
 /* Highlight box */
 .highlight-box {
   border: 2px solid var(--primary);
-  background-color: var(--primary);
-  /* Opacity issues */
+  background-color: color-mix(in srgb, var(--primary), transparent 80%);
   pointer-events: none;
   z-index: 9999;
   transition: all 0.1s ease;
@@ -182,8 +181,8 @@
 .highlight-box.pinned {
   border-width: 3px;
   border-color: var(--primary);
-  background-color: var(--primary);
-  box-shadow: 0 0 20px var(--primary);
+  background-color: color-mix(in srgb, var(--primary), transparent 80%);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--primary), transparent 60%);
 }
 
 /* Selector Panel */

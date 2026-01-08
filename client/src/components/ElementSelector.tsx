@@ -96,18 +96,17 @@ export default function ElementSelector() {
     pinnedSelectorRef.current = pinnedElement?.selector || null;
   }, [pinnedElement]);
 
-  // Calculate element rect relative to viewport
+  // Calculate element rect relative to iframe wrapper (for absolute positioning)
   const getElementRect = useCallback((element: Element): HighlightRect | null => {
-    const iframe = iframeRef.current;
-    if (!iframe) return null;
-
     try {
-      const iframeRect = iframe.getBoundingClientRect();
+      // getBoundingClientRect returns coordinates relative to the iframe's viewport
+      // Since we are positioning absolutely inside the iframe wrapper (which matches the iframe viewport),
+      // we can use these coordinates directly.
       const elementRect = element.getBoundingClientRect();
 
       return {
-        top: iframeRect.top + elementRect.top,
-        left: iframeRect.left + elementRect.left,
+        top: elementRect.top,
+        left: elementRect.left,
         width: elementRect.width,
         height: elementRect.height,
       };
@@ -496,12 +495,12 @@ export default function ElementSelector() {
           {!loadedUrl ? (
             <div className="iframe-wrapper">
               <div className="empty-state">
-                <div className="empty-state-title">Element Selector</div>
+                {/* <div className="empty-state-title">Element Selector</div> */}
                 <div className="empty-state-text">
                   Enter a URL above or click DEMO to test
-                </div>
-                <div className="empty-state-hint">
-                  Hover to highlight · Click to pin · Generate CSS selectors
+                  <div className="empty-state-hint">
+                    Hover to highlight · Click to pin · Generate CSS selectors
+                  </div>
                 </div>
               </div>
             </div>
@@ -544,7 +543,7 @@ export default function ElementSelector() {
                     left: hoverRect.left,
                     width: hoverRect.width,
                     height: hoverRect.height,
-                    position: 'fixed',
+                    position: 'absolute',
                   }}
                 />
               )}
@@ -558,7 +557,7 @@ export default function ElementSelector() {
                     left: pinnedElement.rect.left,
                     width: pinnedElement.rect.width,
                     height: pinnedElement.rect.height,
-                    position: 'fixed',
+                    position: 'absolute',
                   }}
                 />
               )}
