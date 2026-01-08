@@ -10,9 +10,9 @@ import { Outlet } from "react-router-dom"
 
 export default function Navigate() {
     return (
-        <SidebarProvider>
+        <SidebarProvider className="h-screen w-screen overflow-hidden">
             <AppSidebar />
-            <SidebarInset>
+            <SidebarInset className="flex flex-col flex-1 h-full overflow-hidden">
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" />
                     <div className="h-4 w-px bg-border mx-2" />
@@ -23,7 +23,7 @@ export default function Navigate() {
                         <Button variant="outline" size="sm">Feedback</Button>
                     </div>
                 </header>
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 overflow-auto min-w-0">
                     <Outlet />
                 </div>
             </SidebarInset>

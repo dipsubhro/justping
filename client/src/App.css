@@ -8,18 +8,18 @@
   flex-direction: column;
 }
 
-/* Viewport Container - centered box layout */
+/* Viewport Container - centered box layout via Flexbox */
 .viewport-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
   align-items: center;
   justify-content: center;
   padding: 32px;
   background-color: var(--background);
+  /* Removed absolute positioning requirements */
 }
 
 /* The box that holds the iframe */
