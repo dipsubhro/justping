@@ -6,9 +6,11 @@ import {
     SidebarInset,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { Outlet } from "react-router-dom"
+import { Link, useLocation, Outlet } from "react-router-dom"
 
 export default function Navigate() {
+    const location = useLocation();
+    
     return (
         <SidebarProvider className="h-screen w-screen overflow-hidden">
             <AppSidebar />
@@ -21,6 +23,11 @@ export default function Navigate() {
                     </nav>
                     <div className="ml-auto flex items-center gap-2">
                         <Button variant="outline" size="sm">Feedback</Button>
+                        <Button variant="default" size="sm" asChild>
+                            <Link to="/login" state={{ backgroundLocation: location }}>
+                                Login
+                            </Link>
+                        </Button>
                     </div>
                 </header>
                 <div className="flex-1 flex flex-col overflow-hidden min-w-0">

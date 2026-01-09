@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import LoginModal from './components/LoginModal';
 import ElementSelector from './components/ElementSelector';
 import Navigate from './pages/Navigate';
 import DashboardHome from './pages/DashboardHome';
@@ -8,10 +9,14 @@ import Billing from './pages/Billing';
 import Alerts from './pages/Alerts';
 import './index.css';
 
-export default function App() {
+function AppRoutes() {
+  const location = useLocation();
+  const state = location.state as { backgroundLocation?: Location };
+  const backgroundLocation = state?.backgroundLocation;
+
   return (
-    <BrowserRouter>
-      <Routes>
+    <>
+      <Routes location={backgroundLocation || location}>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/navigate" element={<Navigate />}>
@@ -21,6 +26,20 @@ export default function App() {
           <Route path="alerts" element={<Alerts />} />
         </Route>
       </Routes>
+      
+      {backgroundLocation && (
+        <Routes>
+          <Route path="/login" element={<LoginModal />} />
+        </Routes>
+      )}
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
