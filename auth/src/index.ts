@@ -7,6 +7,13 @@ import { auth } from './auth.js'
 const app = express()
 const port = Number(process.env.PORT) || 8787
 
+app.use(express.json())
+
+app.get('/health', (req, res) => {
+    console.log('Health check requested');
+    res.send('Auth service is healthy')
+})
+
 app.use(cors({
     origin: process.env.TRUSTED_ORIGINS?.split(',') || [
         'http://localhost:5173',
@@ -18,13 +25,14 @@ app.use(cors({
 }))
 
 
-app.all('/api/auth/*path', toNodeHandler(auth))
 
-app.use(express.json())
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from ${req.headers.origin}`);
+    console.log('Headers:', JSON.stringify(req.headers));
+    next();
+});
 
-app.get('/health', (req, res) => {
-    res.send('Auth service is healthy')
-})
+app.all('/api/auth/*path', toNodeHandler(auth));
 
 app.listen(port, () => {
     console.log(`Auth server running → http://localhost:${port}`)

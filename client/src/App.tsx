@@ -9,6 +9,7 @@ import DashboardHome from './pages/DashboardHome';
 import Billing from './pages/Billing';
 import Alerts from './pages/Alerts';
 import './index.css';
+import ProtectedRoute from './components/protected-route';
 
 function AppRoutes() {
   const location = useLocation();
@@ -21,11 +22,13 @@ function AppRoutes() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/navigate" element={<Navigate />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="pinning" element={<ElementSelector />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="alerts" element={<Alerts />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/navigate" element={<Navigate />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="pinning" element={<ElementSelector />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="alerts" element={<Alerts />} />
+          </Route>
         </Route>
       </Routes>
       

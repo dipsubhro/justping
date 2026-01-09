@@ -1,9 +1,46 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
 
 export default function Signup() {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      return
+    }
+
+    setLoading(true)
+
+    await authClient.signUp.email({
+      email,
+      password,
+      name,
+    }, {
+      onSuccess: () => {
+        setLoading(false)
+        navigate("/navigate")
+      },
+      onError: (ctx) => {
+        setLoading(false)
+        setError(ctx.error.message)
+      }
+    })
+  }
+
   return (
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
       {/* Left Column: Signup Form */}
@@ -18,7 +55,7 @@ export default function Signup() {
             </p>
           </div>
           <div className="grid gap-6">
-            <form>
+            <form onSubmit={handleSignup}>
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Full Name</Label>
@@ -29,6 +66,9 @@ export default function Signup() {
                     autoCapitalize="none"
                     autoComplete="name"
                     autoCorrect="off"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="grid gap-2">
@@ -40,6 +80,9 @@ export default function Signup() {
                     autoCapitalize="none"
                     autoComplete="email"
                     autoCorrect="off"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                   <p className="text-[0.8rem] text-muted-foreground">
                     We'll never share your email with anyone else.
@@ -47,17 +90,34 @@ export default function Signup() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" />
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
                   <p className="text-[0.8rem] text-muted-foreground">
                     Must be at least 8 characters.
                   </p>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="confirm-password">Confirm Password</Label>
-                  <Input id="confirm-password" type="password" />
+                  <Input 
+                    id="confirm-password" 
+                    type="password" 
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
                 </div>
-                <Button type="submit" className="w-full">
-                  Create Account
+                {error && (
+                  <div className="text-sm text-red-500">
+                    {error}
+                  </div>
+                )}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creating account..." : "Create Account"}
                 </Button>
               </div>
             </form>
