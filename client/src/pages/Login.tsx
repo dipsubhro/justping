@@ -1,5 +1,5 @@
 import { LoginForm } from "@/components/login-form"
-import loginBg from "@/assets/login-bg.png"
+
 
 export default function Login() {
   return (
@@ -11,13 +11,7 @@ export default function Login() {
           </div>
         </div>
       </div>
-      <div className="relative hidden bg-muted lg:block">
-        <img
-          src={loginBg}
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.5]"
-        />
-      </div>
+      <div className="hidden bg-muted lg:block" />
     </div>
   )
 }

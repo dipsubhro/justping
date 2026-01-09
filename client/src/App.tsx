@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import LoginModal from './components/LoginModal';
 import ElementSelector from './components/ElementSelector';
 import Navigate from './pages/Navigate';
@@ -19,6 +20,7 @@ function AppRoutes() {
       <Routes location={backgroundLocation || location}>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/navigate" element={<Navigate />}>
           <Route index element={<DashboardHome />} />
           <Route path="pinning" element={<ElementSelector />} />
