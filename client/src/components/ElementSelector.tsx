@@ -24,56 +24,7 @@ const CORS_PROXIES = [
   'https://cors-anywhere.herokuapp.com/',
 ];
 
-// Demo HTML content for testing without CORS issues
-const DEMO_HTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #fff; padding: 40px; min-height: 100vh; }
-    .container { max-width: 800px; margin: 0 auto; }
-    h1 { font-size: 48px; margin-bottom: 24px; cursor: default; }
-    p { font-size: 18px; line-height: 1.6; margin-bottom: 16px; color: #aaa; }
-    .card { background: #252525; border: 1px solid #333; padding: 24px; margin-top: 32px; }
-    .card-title { font-size: 24px; margin-bottom: 12px; }
-    .card-text { color: #888; }
-    .btn { display: inline-block; background: #FFF44F; color: #000; padding: 12px 24px; margin-top: 16px; text-decoration: none; font-weight: 600; cursor: pointer; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
-    .grid-item { background: #2a2a2a; padding: 32px; text-align: center; border: 1px solid #333; }
-    .nav { display: flex; gap: 24px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #333; }
-    .nav a { color: #888; text-decoration: none; cursor: pointer; }
-    .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #333; color: #555; font-size: 14px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <nav class="nav">
-      <a href="#">Home</a>
-      <a href="#">Products</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </nav>
-    <h1>Welcome to Demo Page</h1>
-    <p>This is a demo page for testing the element selector. Hover over any element to highlight it, then click to pin and generate a CSS selector.</p>
-    <p>The selector will appear in the panel at the bottom left of the screen.</p>
-    <div class="card">
-      <h2 class="card-title">Featured Content</h2>
-      <p class="card-text">This is a sample card component with some nested elements that you can select.</p>
-      <a href="#" class="btn">Learn More</a>
-    </div>
-    <div class="grid">
-      <div class="grid-item" id="item-1">Item 1</div>
-      <div class="grid-item" id="item-2">Item 2</div>
-      <div class="grid-item" id="item-3">Item 3</div>
-    </div>
-    <footer class="footer">
-      &copy; 2026 Demo Company. All rights reserved.
-    </footer>
-  </div>
-</body>
-</html>
-`;
+
 
 export default function ElementSelector() {
   const [url, setUrl] = useState('');
@@ -83,7 +34,6 @@ export default function ElementSelector() {
   const [hoverRect, setHoverRect] = useState<HighlightRect | null>(null);
   const [pinnedElement, setPinnedElement] = useState<PinnedElement | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
   const [copied, setCopied] = useState(false);
   const [proxyContent, setProxyContent] = useState<string | null>(null);
 
@@ -303,7 +253,6 @@ export default function ElementSelector() {
     setPinnedElement(null);
     setHoverRect(null);
     setError(null);
-    setIsDemo(false);
     setProxyContent(null);
     setLoadedUrl(normalizedUrl);
 
@@ -354,38 +303,7 @@ export default function ElementSelector() {
     }
   }, [proxyContent, setupIframeListeners]);
 
-  // Load demo content
-  const handleLoadDemo = useCallback(() => {
-    setIsLoading(true);
-    setLoadingStatus('Loading demo...');
-    setPinnedElement(null);
-    setHoverRect(null);
-    setError(null);
-    setIsDemo(true);
-    setProxyContent(null);
-    setLoadedUrl('about:blank');
 
-    // Write demo content after brief delay
-    setTimeout(() => {
-      const iframe = iframeRef.current;
-      if (iframe) {
-        try {
-          const doc = iframe.contentDocument;
-          if (doc) {
-            doc.open();
-            doc.write(DEMO_HTML);
-            doc.close();
-            setIsLoading(false);
-            setLoadingStatus('');
-            setupIframeListeners();
-          }
-        } catch {
-          setError('Failed to load demo');
-          setIsLoading(false);
-        }
-      }
-    }, 100);
-  }, [setupIframeListeners]);
 
   // Handle Enter key in input
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -396,12 +314,12 @@ export default function ElementSelector() {
 
   // Handle iframe load (for non-proxy loads)
   const handleIframeLoad = useCallback(() => {
-    if (!proxyContent && !isDemo) {
+    if (!proxyContent) {
       // Direct iframe load - will likely hit CORS
       setIsLoading(false);
       setupIframeListeners();
     }
-  }, [proxyContent, isDemo, setupIframeListeners]);
+  }, [proxyContent, setupIframeListeners]);
 
   // Update pinned element rect on scroll/resize
   useEffect(() => {
@@ -484,11 +402,11 @@ export default function ElementSelector() {
               {isLoading ? '...' : 'Load'}
             </button>
             <button
-              className="viewport-btn demo"
-              onClick={handleLoadDemo}
-              disabled={isLoading}
+              className="viewport-btn pin"
+              onClick={() => setPinnedElement(null)}
+              disabled={!pinnedElement}
             >
-              Demo
+              Pin
             </button>
           </div>
 
@@ -497,7 +415,7 @@ export default function ElementSelector() {
               <div className="empty-state">
                 {/* <div className="empty-state-title">Element Selector</div> */}
                 <div className="empty-state-text">
-                  Enter a URL above or click DEMO to test
+                  Enter a URL above to get started
                   <div className="empty-state-hint">
                     Hover to highlight · Click to pin · Generate CSS selectors
                   </div>
@@ -512,9 +430,6 @@ export default function ElementSelector() {
                   <div className="error-state-title">Load Failed</div>
                   <div className="error-state-text">
                     {error}
-                    <br />
-                    <br />
-                    Try the DEMO button to test element selection.
                   </div>
                 </div>
               ) : (
