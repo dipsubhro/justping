@@ -2,50 +2,86 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { Clock, RefreshCw, ArrowRight, Plus } from "lucide-react"
-
-// Mock data - replace with actual API calls later
-const mockMonitors = [
-    {
-        id: "1",
-        websiteName: "Documentation Site",
-        targetType: "Element - Product pricing table",
-        status: "active" as const,
-        lastChecked: "2 mins ago",
-        frequency: "Every 5 minutes",
-        hasChanged: true,
-    },
-    {
-        id: "2",
-        websiteName: "Competitor API",
-        targetType: "API - /v1/products endpoint",
-        status: "active" as const,
-        lastChecked: "5 mins ago",
-        frequency: "Every 10 minutes",
-        hasChanged: false,
-    },
-    {
-        id: "3",
-        websiteName: "News Portal",
-        targetType: "Full Page - Homepage",
-        status: "paused" as const,
-        lastChecked: "1 hour ago",
-        frequency: "Every 30 minutes",
-        hasChanged: false,
-    },
-    {
-        id: "4",
-        websiteName: "E-commerce Dashboard",
-        targetType: "Element - Product inventory",
-        status: "error" as const,
-        lastChecked: "10 mins ago",
-        frequency: "Every 15 minutes",
-        hasChanged: true,
-    },
-]
+import { Clock, RefreshCw, ArrowRight, Plus, Loader2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { monitorApi, type Monitor } from "@/api/monitors"
 
 export default function MonitorList() {
-    const monitors = mockMonitors // Toggle to [] to see empty state
+    const [monitors, setMonitors] = useState<Monitor[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        loadMonitors()
+    }, [])
+
+    const loadMonitors = async () => {
+        try {
+            setLoading(true)
+            setError(null)
+            const data = await monitorApi.getMonitors()
+            setMonitors(data)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load monitors')
+            console.error('Error loading monitors:', err)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Helper function to format time ago
+    const formatTimeAgo = (dateString: string) => {
+        const date = new Date(dateString)
+        const now = new Date()
+        const diffMs = now.getTime() - date.getTime()
+        const diffMins = Math.floor(diffMs / 60000)
+        const diffHours = Math.floor(diffMins / 60)
+        const diffDays = Math.floor(diffHours / 24)
+
+        if (diffMins < 1) return 'Just now'
+        if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`
+        if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+    }
+
+    // Helper to format frequency
+    const formatFrequency = (frequency: { value: number; unit: string }) => {
+        return `Every ${frequency.value} ${frequency.unit}`
+    }
+
+    // Loading state
+    if (loading) {
+        return (
+            <div className="flex flex-1 items-center justify-center p-4">
+                <div className="text-center space-y-4">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
+                    <p className="text-muted-foreground">Loading monitors...</p>
+                </div>
+            </div>
+        )
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="flex flex-1 items-center justify-center p-4">
+                <div className="text-center space-y-4 max-w-md">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+                        <span className="text-2xl">❌</span>
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-semibold tracking-tight">
+                            Error Loading Monitors
+                        </h2>
+                        <p className="text-muted-foreground mt-2">{error}</p>
+                    </div>
+                    <Button onClick={loadMonitors}>
+                        Try Again
+                    </Button>
+                </div>
+            </div>
+        )
+    }
 
     // Empty state
     if (monitors.length === 0) {
@@ -108,7 +144,7 @@ export default function MonitorList() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                 {monitors.map((monitor) => (
                     <Card
-                        key={monitor.id}
+                        key={monitor._id}
                         className="hover:shadow-md transition-shadow cursor-pointer group"
                     >
                         <CardHeader className="pb-3">
@@ -142,11 +178,11 @@ export default function MonitorList() {
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1.5">
                                     <Clock className="h-3.5 w-3.5" />
-                                    <span>{monitor.lastChecked}</span>
+                                    <span>{formatTimeAgo(monitor.lastChecked)}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                     <RefreshCw className="h-3.5 w-3.5" />
-                                    <span>{monitor.frequency}</span>
+                                    <span>{formatFrequency(monitor.frequency)}</span>
                                 </div>
                             </div>
 
@@ -165,7 +201,7 @@ export default function MonitorList() {
                                     className="group-hover:text-primary"
                                     asChild
                                 >
-                                    <Link to={`/navigate/monitors/${monitor.id}`}>
+                                    <Link to={`/navigate/monitors/${monitor._id}`}>
                                         View Details
                                         <ArrowRight className="ml-1 h-3.5 w-3.5" />
                                     </Link>
