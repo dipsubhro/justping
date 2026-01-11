@@ -22,13 +22,13 @@ function AppRoutes() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
           <Route path="/navigate" element={<Navigate />}>
             <Route index element={<DashboardHome />} />
             <Route path="pinning" element={<ElementSelector />} />
             <Route path="billing" element={<Billing />} />
             <Route path="alerts" element={<Alerts />} />
-          </Route>
+          {/* </Route> */}
         </Route>
       </Routes>
       

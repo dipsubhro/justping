@@ -10,12 +10,10 @@ import (
 	"os"
 )
 
-// WatchRequest represents the incoming request from frontend
 type WatchRequest struct {
 	URL string `json:"url"`
 }
 
-// DebugResponse represents the debug response sent back to frontend
 type DebugResponse struct {
 	ReceivedURL          string `json:"received_url"`
 	ChangeDetectionURL   string `json:"changedetection_url"`
@@ -35,6 +33,17 @@ func main() {
 }
 
 func handleWatch(w http.ResponseWriter, r *http.Request) {
+	// Set CORS headers for all requests
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	// Handle preflight OPTIONS request
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	// Only accept POST
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

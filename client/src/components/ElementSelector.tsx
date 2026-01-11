@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { generateSelector } from '../utils/selectorGenerator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import '../App.css';
 
 interface HighlightRect {
@@ -36,6 +37,9 @@ export default function ElementSelector() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [proxyContent, setProxyContent] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogType, setDialogType] = useState<'success' | 'error'>('success');
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const hoveredElementRef = useRef<Element | null>(null);
@@ -377,6 +381,42 @@ export default function ElementSelector() {
     }
   }, [pinnedElement]);
 
+  // Handle pin button click - POST to backend
+  const handlePinClick = useCallback(async () => {
+    if (!loadedUrl) return;
+
+    try {
+      const response = await fetch('http://localhost:3002/api/watch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: loadedUrl }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.changedetection_status === 201) {
+        // Success - extract UUID from response body
+        const uuidMatch = data.changedetection_body.match(/"uuid":\s*"([^"]+)"/);
+        const uuid = uuidMatch ? uuidMatch[1] : 'Created successfully';
+        setDialogMessage(`Watch created successfully!\n\nUUID: ${uuid}`);
+        setDialogType('success');
+        setDialogOpen(true);
+      } else {
+        // Error from backend or changedetection
+        setDialogMessage(`Failed to create watch\n\nStatus: ${data.changedetection_status || 'N/A'}\nError: ${data.error || data.changedetection_body || 'Unknown error'}`);
+        setDialogType('error');
+        setDialogOpen(true);
+      }
+    } catch (err) {
+      console.error('Error creating watch:', err);
+      setDialogMessage(`Failed to connect to backend\n\nMake sure the Go server is running on port 3002`);
+      setDialogType('error');
+      setDialogOpen(true);
+    }
+  }, [loadedUrl]);
+
   return (
     <div className="app">
       {/* Viewport Container - centered box layout */}
@@ -403,8 +443,8 @@ export default function ElementSelector() {
             </button>
             <button
               className="viewport-btn pin"
-              onClick={() => setPinnedElement(null)}
-              disabled={!pinnedElement}
+              onClick={handlePinClick}
+              disabled={!loadedUrl || isLoading}
             >
               Pin
             </button>
@@ -493,6 +533,20 @@ export default function ElementSelector() {
           <div className="selector-hint">Click panel to copy · Click element to unpin</div>
         </div>
       )}
+
+      {/* Success/Error Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className={dialogType === 'success' ? 'border-green-500' : 'border-red-500'}>
+          <DialogHeader>
+            <DialogTitle className={dialogType === 'success' ? 'text-green-600' : 'text-red-600'}>
+              {dialogType === 'success' ? '✓ Success' : '✗ Error'}
+            </DialogTitle>
+            <DialogDescription className="whitespace-pre-line text-left">
+              {dialogMessage}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
