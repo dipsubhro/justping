@@ -121,6 +121,24 @@ func CreateMonitor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if user already has a monitor for this URL
+	collection := database.GetMonitorsCollection()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var existingMonitor models.Monitor
+	err = collection.FindOne(ctx, bson.M{"userId": userID, "url": req.URL}).Decode(&existingMonitor)
+	if err == nil {
+		// Monitor already exists for this URL
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "Monitor already exists for this URL",
+			"existingMonitor": existingMonitor,
+		})
+		return
+	}
+
 	// Set default frequency if not provided
 	if req.Frequency.Value == 0 {
 		req.Frequency = models.Frequency{Value: 5, Unit: "minutes"}
