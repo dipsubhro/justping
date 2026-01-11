@@ -381,41 +381,82 @@ export default function ElementSelector() {
     }
   }, [pinnedElement]);
 
-  // Handle pin button click - POST to backend
+  // Handle pin button click - POST to create monitor
   const handlePinClick = useCallback(async () => {
     if (!loadedUrl) return;
 
+    // Extract page title from loaded page (if available)
+    let pageTitle = 'Unnamed Monitor';
     try {
-      const response = await fetch('http://localhost:3002/api/watch', {
+      const iframeDoc = iframeRef.current?.contentDocument;
+      if (iframeDoc?.title) {
+        pageTitle = iframeDoc.title;
+      }
+    } catch {
+      // Cross-origin - use URL as fallback
+      pageTitle = new URL(loadedUrl).hostname;
+    }
+
+    // Determine target type based on pinned element
+    const targetType = pinnedElement 
+      ? `Element - ${pinnedElement.selector}` 
+      : 'Full Page Monitor';
+
+    try {
+      const response = await fetch('http://localhost:3002/api/monitors/create', {
         method: 'POST',
+        credentials: 'include', // Send auth cookies
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: loadedUrl }),
+        body: JSON.stringify({
+          websiteName: pageTitle,
+          targetType: targetType,
+          url: loadedUrl,
+          selector: pinnedElement?.selector || '',
+        }),
       });
 
       const data = await response.json();
 
-      if (response.ok && data.changedetection_status === 201) {
-        // Success - extract UUID from response body
-        const uuidMatch = data.changedetection_body.match(/"uuid":\s*"([^"]+)"/);
-        const uuid = uuidMatch ? uuidMatch[1] : 'Created successfully';
-        setDialogMessage(`Watch created successfully!\n\nUUID: ${uuid}`);
+      if (response.ok) {
+        // Success - redirect to monitors page
+        setDialogMessage(`Monitor created successfully!\\n\\n"${pageTitle}" is now being monitored.`);
         setDialogType('success');
         setDialogOpen(true);
+        
+        // Navigate to monitors page after short delay
+        setTimeout(() => {
+          window.location.href = '/navigate/monitors';
+        }, 1500);
+      } else if (response.status === 409) {
+        // Duplicate monitor
+        setDialogMessage(`Monitor already exists!\\n\\nYou already have a monitor for this URL.\\n\\nRedirecting to monitors page...`);
+        setDialogType('error');
+        setDialogOpen(true);
+        
+        // Still redirect to show existing monitor
+        setTimeout(() => {
+          window.location.href = '/navigate/monitors';
+        }, 2000);
+      } else if (response.status === 401) {
+        // Not authenticated
+        setDialogMessage(`Please log in first\\n\\nYou need to be logged in to create monitors.`);
+        setDialogType('error');
+        setDialogOpen(true);
       } else {
-        // Error from backend or changedetection
-        setDialogMessage(`Failed to create watch\n\nStatus: ${data.changedetection_status || 'N/A'}\nError: ${data.error || data.changedetection_body || 'Unknown error'}`);
+        // Other error
+        setDialogMessage(`Failed to create monitor\\n\\n${data.error || 'Unknown error'}`);
         setDialogType('error');
         setDialogOpen(true);
       }
     } catch (err) {
-      console.error('Error creating watch:', err);
-      setDialogMessage(`Failed to connect to backend\n\nMake sure the Go server is running on port 3002`);
+      console.error('Error creating monitor:', err);
+      setDialogMessage(`Failed to connect to backend\\n\\nMake sure you're logged in and the server is running.`);
       setDialogType('error');
       setDialogOpen(true);
     }
-  }, [loadedUrl]);
+  }, [loadedUrl, pinnedElement]);
 
   return (
     <div className="app">
