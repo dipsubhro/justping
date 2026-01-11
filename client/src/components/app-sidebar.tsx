@@ -24,7 +24,7 @@ import {
 // Menu items grouped structure
 const mainItems = [
     { title: "Dashboard", url: "/navigate", icon: Home },
-    { title: "Monitors", url: "#", icon: Monitor },
+    { title: "Monitors", url: "/navigate/monitors", icon: Monitor },
     { title: "Create Monitor", url: "/navigate/pinning", icon: Pin },
     { title: "Analytics", url: "#", icon: BarChart },
     { title: "Alerts", url: "/navigate/alerts", icon: Bell },
