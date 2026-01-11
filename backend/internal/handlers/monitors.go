@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"justping/backend/internal/auth"
 	"justping/backend/internal/database"
 	"justping/backend/internal/models"
