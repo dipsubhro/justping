@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { generateSelector } from '../utils/selectorGenerator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import '../App.css';
@@ -41,6 +42,7 @@ export default function ElementSelector() {
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogType, setDialogType] = useState<'success' | 'error'>('success');
 
+  const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const hoveredElementRef = useRef<Element | null>(null);
   const pinnedSelectorRef = useRef<string | null>(null);
@@ -427,7 +429,7 @@ export default function ElementSelector() {
         
         // Navigate to monitors page after short delay
         setTimeout(() => {
-          window.location.href = '/navigate/monitors';
+          navigate('/navigate/monitors');
         }, 1500);
       } else if (response.status === 409) {
         // Duplicate monitor
@@ -437,7 +439,7 @@ export default function ElementSelector() {
         
         // Still redirect to show existing monitor
         setTimeout(() => {
-          window.location.href = '/navigate/monitors';
+          navigate('/navigate/monitors');
         }, 2000);
       } else if (response.status === 401) {
         // Not authenticated

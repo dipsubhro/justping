@@ -8,6 +8,7 @@ import {
     CreditCard,
     LogOut
 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
     Sidebar,
@@ -47,10 +48,10 @@ export function AppSidebar() {
                             {mainItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
+                                        <Link to={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
@@ -67,10 +68,10 @@ export function AppSidebar() {
                                 asChild
                                 className={item.title === "Sign Out" ? "text-red-500 hover:text-red-600 hover:bg-red-50" : ""}
                             >
-                                <a href={item.url}>
+                                <Link to={item.url}>
                                     <item.icon />
                                     <span>{item.title}</span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}
