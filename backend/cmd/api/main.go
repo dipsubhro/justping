@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"justping/backend/internal/database"
+	"justping/backend/internal/handlers"
 	"log"
 	"net/http"
 	"os"
@@ -23,10 +25,27 @@ type DebugResponse struct {
 }
 
 func main() {
+	// Connect to MongoDB
+	mongoURI := os.Getenv("MONGODB_URI")
+	if mongoURI == "" {
+		mongoURI = "mongodb://localhost:27017" // default
+	}
+	if err := database.Connect(mongoURI); err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
+	defer database.Disconnect()
+
+	// Monitor API routes
+	http.HandleFunc("/api/monitors", handlers.ListMonitors)
+	http.HandleFunc("/api/monitors/create", handlers.CreateMonitor)
+	http.HandleFunc("/api/monitors/", handlers.MonitorByID)
+
+	// Existing watch route
 	http.HandleFunc("/api/watch", handleWatch)
 	
 	port := "3002"
 	log.Printf("Server starting on port %s\n", port)
+	log.Printf("Monitor API: http://localhost:%s/api/monitors\n", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
