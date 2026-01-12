@@ -162,8 +162,9 @@ func CreateMonitor(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert into MongoDB
-	collection := database.GetMonitorsCollection()
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// Insert into MongoDB
+	// collection is already defined
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	result, err := collection.InsertOne(ctx, monitor)
