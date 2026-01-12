@@ -6,6 +6,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Pin, Loader2, Globe, Copy, Info } from 'lucide-react';
+import CreateMonitorForm from './CreateMonitorForm';
+import type { MonitorConfig } from './CreateMonitorForm';
 import '../App.css';
 
 interface HighlightRect {
@@ -43,6 +45,7 @@ export default function ElementSelector() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogType, setDialogType] = useState<'success' | 'error'>('success');
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -385,71 +388,65 @@ export default function ElementSelector() {
     }
   }, [pinnedElement]);
 
-  // Handle pin button click - POST to create monitor
-  const handlePinClick = useCallback(async () => {
+  // Handle pin button click - open configuration form
+  const handlePinClick = useCallback(() => {
     if (!loadedUrl) return;
+    setFormDialogOpen(true);
+  }, [loadedUrl]);
 
-    // Extract page title from loaded page (if available)
-    let pageTitle = 'Unnamed Monitor';
-    try {
-      const iframeDoc = iframeRef.current?.contentDocument;
-      if (iframeDoc?.title) {
-        pageTitle = iframeDoc.title;
-      }
-    } catch {
-      // Cross-origin - use URL as fallback
-      pageTitle = new URL(loadedUrl).hostname;
-    }
-
-    // Determine target type based on pinned element
+  // Handle form submission - POST to create monitor
+  const handleFormSubmit = useCallback(async (config: MonitorConfig) => {
     const targetType = pinnedElement 
-      ? `Element - ${pinnedElement.selector}` 
+      ? `Element - ${config.selector}` 
       : 'Full Page Monitor';
 
     try {
       const response = await fetch('http://localhost:3002/api/monitors/create', {
         method: 'POST',
-        credentials: 'include', // Send auth cookies
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          websiteName: pageTitle,
+          websiteName: config.websiteName,
           targetType: targetType,
-          url: loadedUrl,
-          selector: pinnedElement?.selector || '',
+          url: config.url,
+          selector: config.selector,
+          frequency: config.frequency,
+          duration: config.duration,
+          alertsEnabled: config.alertsEnabled,
+          notificationMethod: config.notificationMethod,
+          detectionMode: config.detectionMode,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Success - redirect to monitors page
-        setDialogMessage(`Monitor created successfully!\\n\\n"${pageTitle}" is now being monitored.`);
+        setFormDialogOpen(false);
+        setDialogMessage(`Monitor created successfully!\\n\\n"${config.websiteName}" is now being monitored.`);
         setDialogType('success');
         setDialogOpen(true);
         
-        // Navigate to monitors page after short delay
         setTimeout(() => {
           navigate('/navigate/monitors');
         }, 1500);
       } else if (response.status === 409) {
-        // Duplicate monitor
+        setFormDialogOpen(false);
         setDialogMessage(`Monitor already exists!\\n\\nYou already have a monitor for this URL.\\n\\nRedirecting to monitors page...`);
         setDialogType('error');
         setDialogOpen(true);
         
-        // Still redirect to show existing monitor
         setTimeout(() => {
           navigate('/navigate/monitors');
         }, 2000);
       } else if (response.status === 401) {
-        // Not authenticated
+        setFormDialogOpen(false);
         setDialogMessage(`Please log in first\\n\\nYou need to be logged in to create monitors.`);
         setDialogType('error');
         setDialogOpen(true);
       } else {
-        // Other error
+        setFormDialogOpen(false);
         setDialogMessage(`Failed to create monitor\\n\\n${data.error || 'Unknown error'}`);
         setDialogType('error');
         setDialogOpen(true);
@@ -460,7 +457,7 @@ export default function ElementSelector() {
       setDialogType('error');
       setDialogOpen(true);
     }
-  }, [loadedUrl, pinnedElement]);
+  }, [loadedUrl, pinnedElement, navigate]);
 
   return (
     <div className="flex flex-col h-full w-full p-4 gap-4 box-border">
@@ -617,6 +614,26 @@ export default function ElementSelector() {
           </CardContent>
         </Card>
       )}
+
+      {/* Monitor Configuration Form Dialog */}
+      <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <CreateMonitorForm
+            selector={pinnedElement?.selector || ''}
+            url={loadedUrl}
+            websiteName={(() => {
+              try {
+                const iframeDoc = iframeRef.current?.contentDocument;
+                return iframeDoc?.title || new URL(loadedUrl).hostname;
+              } catch {
+                return loadedUrl;
+              }
+            })()}
+            onSubmit={handleFormSubmit}
+            onCancel={() => setFormDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* Success/Error Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
