@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"justping/backend/internal/auth"
+	"justping/backend/internal/changedetection"
 	"justping/backend/internal/database"
 	"justping/backend/internal/models"
 	"log"
@@ -144,24 +145,62 @@ func CreateMonitor(w http.ResponseWriter, r *http.Request) {
 		req.Frequency = models.Frequency{Value: 5, Unit: "minutes"}
 	}
 
+	// Create watch on changedetection.io
+	changeDetectionBaseURL := os.Getenv("CHANGEDETECTION_BASE_URL")
+	if changeDetectionBaseURL == "" {
+		changeDetectionBaseURL = "http://localhost:5000"
+	}
+	changeDetectionAPIKey := os.Getenv("CHANGEDETECTION_API_KEY")
+	
+	cdClient := changedetection.NewClient(changeDetectionBaseURL, changeDetectionAPIKey)
+	
+	// Prepare watch request
+	watchReq := changedetection.CreateWatchRequest{
+		URL:              req.URL,
+		Title:            req.WebsiteName,
+		TimeBetweenCheck: changedetection.MapFrequencyToTimeBetweenCheck(req.Frequency),
+		NotificationMuted: !req.AlertsEnabled,
+	}
+	
+	// Create watch on changedetection.io
+	watchUUID, err := cdClient.CreateWatch(watchReq)
+	if err != nil {
+		log.Printf("ChangeDetection.io error: %v", err)
+		http.Error(w, "Failed to create monitor on change detection service", http.StatusInternalServerError)
+		return
+	}
+	
+	log.Printf("Created watch on changedetection.io for URL: %s, UUID: %s", req.URL, watchUUID)
+
 	// Create monitor document
 	now := time.Now()
+	
+	// Prepare duration pointer
+	var duration *models.Duration
+	if req.Duration.Type != "" {
+		duration = &req.Duration
+	}
+	
 	monitor := models.Monitor{
-		ID:          primitive.NewObjectID(),
-		UserID:      userID,
-		WebsiteName: req.WebsiteName,
-		TargetType:  req.TargetType,
-		URL:         req.URL,
-		Selector:    req.Selector,
-		Status:      "active",
-		LastChecked: now,
-		Frequency:   req.Frequency,
-		HasChanged:  false,
-		CreatedAt:   now,
-		UpdatedAt:   now,
+		ID:                  primitive.NewObjectID(),
+		UserID:              userID,
+		WebsiteName:         req.WebsiteName,
+		TargetType:          req.TargetType,
+		URL:                 req.URL,
+		Selector:            req.Selector,
+		Status:              "active",
+		LastChecked:         now,
+		Frequency:           req.Frequency,
+		HasChanged:          false,
+		CreatedAt:           now,
+		UpdatedAt:           now,
+		ChangeDetectionUUID: watchUUID,
+		Duration:            duration,
+		AlertsEnabled:       req.AlertsEnabled,
+		NotificationMethod:  req.NotificationMethod,
+		DetectionMode:       req.DetectionMode,
 	}
 
-	// Insert into MongoDB
 	// Insert into MongoDB
 	// collection is already defined
 	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
