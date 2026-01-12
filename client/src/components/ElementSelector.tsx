@@ -2,6 +2,10 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateSelector } from '../utils/selectorGenerator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Card, CardContent, CardHeader } from './ui/card';
+import { Pin, Loader2, Globe, Copy, Info } from 'lucide-react';
 import '../App.css';
 
 interface HighlightRect {
@@ -25,8 +29,6 @@ const CORS_PROXIES = [
   'https://thingproxy.freeboard.io/fetch/',
   'https://cors-anywhere.herokuapp.com/',
 ];
-
-
 
 export default function ElementSelector() {
   const [url, setUrl] = useState('');
@@ -461,64 +463,85 @@ export default function ElementSelector() {
   }, [loadedUrl, pinnedElement]);
 
   return (
-    <div className="app">
-      {/* Viewport Container - centered box layout */}
-      <div className="viewport-container">
-        <div className="viewport-box">
+    <div className="flex flex-col h-full w-full p-4 gap-4 box-border">
+      {/* Viewport Container */}
+      <Card className="flex-1 flex flex-col overflow-hidden border-2 shadow-sm bg-background">
+        <CardHeader className="p-3 border-b space-y-0">
           {/* Viewport header with URL input and buttons */}
-          <div className="viewport-header">
-            <div className={`viewport-dot ${loadedUrl && !isLoading && !error ? 'active' : ''}`} />
-            <input
-              type="text"
-              className="viewport-url-input"
-              placeholder="Enter URL to inspect (e.g., google.com)..."
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={isLoading}
-            />
-            <button
-              className="viewport-btn"
-              onClick={handleLoadUrl}
-              disabled={isLoading}
-            >
-              {isLoading ? '...' : 'Load'}
-            </button>
-            <button
-              className="viewport-btn pin"
-              onClick={handlePinClick}
-              disabled={!loadedUrl || isLoading}
-            >
-              Pin
-            </button>
+          <div className="flex items-center gap-2">
+            <div className={`w-2.5 h-2.5 rounded-full transition-colors ${
+              loadedUrl && !isLoading && !error ? 'bg-green-500' : 'bg-none border border-muted-foreground'
+            }`} />
+            <div className="flex-1 flex gap-2">
+              <div className="relative flex-1">
+                <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  className="pl-9 h-9"
+                  placeholder="Enter URL to inspect (e.g., google.com)..."
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={isLoading}
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLoadUrl}
+                disabled={isLoading}
+                className="h-9 px-4 min-w-[80px]"
+              >
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Load'}
+              </Button>
+              <Button
+                size="sm"
+                onClick={handlePinClick}
+                disabled={!loadedUrl || isLoading}
+                className="h-9 px-4 min-w-[80px]"
+              >
+                <Pin className="h-4 w-4 mr-2" />
+                Pin
+              </Button>
+            </div>
           </div>
+        </CardHeader>
 
+        <CardContent className="flex-1 p-0 relative overflow-hidden bg-muted/20">
           {!loadedUrl ? (
-            <div className="iframe-wrapper">
-              <div className="empty-state">
-                {/* <div className="empty-state-title">Element Selector</div> */}
-                <div className="empty-state-text">
-                  Enter a URL above to get started
-                  <div className="empty-state-hint">
-                    Hover to highlight · Click to pin · Generate CSS selectors
-                  </div>
-                </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-muted-foreground">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                <Globe className="h-8 w-8 opacity-50" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">Element Selector</h3>
+              <p className="max-w-md text-sm mb-6">
+                Enter a URL above to get started. You can browse the page, hover to inspect elements, and click to pin them for monitoring.
+              </p>
+              <div className="flex items-center gap-4 text-xs bg-background/50 px-4 py-2 rounded-full border">
+                <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500/50" /> Hover to highlight</span>
+                <span className="w-px h-3 bg-border" />
+                <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-green-500/50" /> Click to pin</span>
               </div>
             </div>
           ) : (
-
-            <div className="iframe-wrapper">
+            <>
               {error ? (
-                <div className="error-state">
-                  <div className="error-state-title">Load Failed</div>
-                  <div className="error-state-text">
-                    {error}
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-50">
+                  <div className="p-6 max-w-sm text-center">
+                    <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Info className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-lg font-medium text-destructive mb-2">Failed to Load</h3>
+                    <p className="text-sm text-muted-foreground">{error}</p>
+                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setError(null)}>
+                      Try Again
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <iframe
                   ref={iframeRef}
-                  className="site-iframe"
+                  className="w-full h-full border-0 bg-white"
                   src="about:blank"
                   onLoad={handleIframeLoad}
                   sandbox="allow-same-origin allow-scripts allow-forms"
@@ -527,15 +550,16 @@ export default function ElementSelector() {
               )}
 
               {isLoading && (
-                <div className="loading-indicator">
-                  {loadingStatus || 'Loading...'}
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[1px] z-40">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                  <span className="text-sm font-medium">{loadingStatus || 'Loading...'}</span>
                 </div>
               )}
 
               {/* Hover highlight */}
               {hoverRect && !pinnedElement && (
                 <div
-                  className="highlight-box"
+                  className="pointer-events-none border-2 border-blue-500 bg-blue-500/10 transition-all duration-75 z-20"
                   style={{
                     top: hoverRect.top,
                     left: hoverRect.left,
@@ -549,7 +573,7 @@ export default function ElementSelector() {
               {/* Pinned highlight */}
               {pinnedElement && (
                 <div
-                  className="highlight-box pinned"
+                  className="pointer-events-none border-2 border-green-500 bg-green-500/20 z-30"
                   style={{
                     top: pinnedElement.rect.top,
                     left: pinnedElement.rect.left,
@@ -559,22 +583,39 @@ export default function ElementSelector() {
                   }}
                 />
               )}
-            </div>
+            </>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Selector Panel */}
       {pinnedElement && (
-        <div className="selector-panel" onClick={copySelector}>
-          <div className="selector-header">
-            <span className="selector-tag">&lt;{pinnedElement.tagName}&gt;</span>
-            {copied && <span className="copied-badge">Copied</span>}
-          </div>
-          <div className="selector-label">CSS Selector</div>
-          <div className="selector-value">{pinnedElement.selector}</div>
-          <div className="selector-hint">Click panel to copy · Click element to unpin</div>
-        </div>
+        <Card 
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl shadow-lg border-2 border-primary/20 cursor-pointer hover:border-primary transition-colors animate-in slide-in-from-bottom-4 fade-in z-50"
+          onClick={copySelector}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-mono text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                  &lt;{pinnedElement.tagName}&gt;
+                </span>
+                {copied && (
+                  <span className="text-xs font-medium text-green-600 flex items-center gap-1 animate-in fade-in slide-in-from-left-2">
+                    <Copy className="h-3 w-3" /> Copied!
+                  </span>
+                )}
+              </div>
+              <div className="font-mono text-sm truncate text-foreground" title={pinnedElement.selector}>
+                {pinnedElement.selector}
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground text-right shrink-0">
+              <div>Click to copy selector</div>
+              <div>Click element to unpin</div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Success/Error Dialog */}
