@@ -8,7 +8,8 @@ import {
     CreditCard,
     LogOut
 } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { authClient } from "@/lib/auth-client"
 
 import {
     Sidebar,
@@ -38,11 +39,26 @@ const footerItems = [
 ]
 
 export function AppSidebar() {
+    const navigate = useNavigate()
+
+    const handleSignOut = async () => {
+        await authClient.signOut()
+        navigate('/')
+    }
+
     return (
         <Sidebar>
             <SidebarContent>
+                {/* Logo Section */}
+                <Link to="/" className="block p-4 mb-2 hover:bg-accent/50 transition-colors">
+                    <div className="flex items-center gap-2 px-2">
+                        <Bell className="h-5 w-5 text-primary" />
+                        <span className="text-lg font-bold">JustPing</span>
+                    </div>
+                </Link>
+
                 <SidebarGroup>
-                    <SidebarGroupLabel>JustPing</SidebarGroupLabel>
+                    <SidebarGroupLabel>Main Navigation</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {mainItems.map((item) => (
@@ -64,15 +80,22 @@ export function AppSidebar() {
                 <SidebarMenu>
                     {footerItems.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton
-                                asChild
-                                className={item.title === "Sign Out" ? "text-red-500 hover:text-red-600 hover:bg-red-50" : ""}
-                            >
-                                <Link to={item.url}>
+                            {item.title === "Sign Out" ? (
+                                <SidebarMenuButton
+                                    onClick={handleSignOut}
+                                    className="text-red-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
+                                >
                                     <item.icon />
                                     <span>{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
+                                </SidebarMenuButton>
+                            ) : (
+                                <SidebarMenuButton asChild>
+                                    <Link to={item.url}>
+                                        <item.icon />
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            )}
                         </SidebarMenuItem>
                     ))}
                 </SidebarMenu>
