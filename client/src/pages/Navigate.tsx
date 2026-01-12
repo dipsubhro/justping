@@ -1,14 +1,32 @@
-
 import { AppSidebar } from "@/components/app-sidebar"
 import {
     SidebarProvider,
     SidebarTrigger,
     SidebarInset,
 } from "@/components/ui/sidebar"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 
 export default function Navigate() {
+    const location = useLocation();
     
+    const getPageTitle = (pathname: string) => {
+        switch (pathname) {
+            case '/navigate':
+            case '/navigate/':
+                return 'Dashboard';
+            case '/navigate/monitors':
+                return 'Monitors';
+            case '/navigate/pinning':
+                return 'Create Monitor';
+            case '/navigate/billing':
+                return 'Pricing';
+            case '/navigate/alerts':
+                return 'Alerts';
+            default:
+                return 'Dashboard';
+        }
+    };
+
     return (
         <SidebarProvider className="h-screen w-screen overflow-hidden">
             <AppSidebar />
@@ -17,7 +35,7 @@ export default function Navigate() {
                     <SidebarTrigger className="-ml-1" />
                     <div className="h-4 w-px bg-border mx-2" />
                     <nav className="flex items-center gap-2 text-sm">
-                        <span className="font-medium text-foreground">Dashboard</span>
+                        <span className="font-medium text-foreground">{getPageTitle(location.pathname)}</span>
                     </nav>
                 </header>
                 <div className="flex-1 flex flex-col overflow-hidden min-w-0">
