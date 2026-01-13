@@ -40,6 +40,11 @@ func main() {
 	http.HandleFunc("/api/monitors/create", handlers.CreateMonitor)
 	http.HandleFunc("/api/monitors/", handlers.MonitorByID)
 
+	// Alert API routes
+	http.HandleFunc("/api/webhook", handlers.HandleWebhook)
+	http.HandleFunc("/api/alerts", handlers.ListAlerts)
+	http.HandleFunc("/api/alerts/mark-checked", handlers.MarkAlertsAsChecked)
+
 	// Existing watch route
 	http.HandleFunc("/api/watch", handleWatch)
 	

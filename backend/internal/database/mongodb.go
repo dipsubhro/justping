@@ -34,6 +34,10 @@ func GetMonitorsCollection() *mongo.Collection {
 	return client.Database("justping").Collection("monitors")
 }
 
+func GetAlertsCollection() *mongo.Collection {
+	return client.Database("justping").Collection("alerts")
+}
+
 func Disconnect() error {
 	if client == nil {
 		return nil
