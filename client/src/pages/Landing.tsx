@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell, Clock, Eye, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
+
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+
 
 export default function Landing() {
     return (
@@ -216,23 +219,40 @@ export default function Landing() {
                 </div>
             </section>
 
+
+
             {/* CTA Section */}
-            <section className="container mx-auto px-6 py-20">
-                <Card className="max-w-4xl mx-auto border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-                    <CardContent className="p-12 text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <section className="container mx-auto px-6">
+                <CardContainer className="inter-var">
+                    <CardBody className="bg-gradient-to-br from-primary/5 to-primary/10 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-primary/20 w-full max-w-4xl h-auto rounded-xl p-12 border">
+                        <CardItem
+                            translateZ="50"
+                            className="text-3xl md:text-4xl font-bold mb-4 text-center w-full"
+                        >
                             Ready to start monitoring?
-                        </h2>
-                        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                        </CardItem>
+                        <CardItem
+                            as="p"
+                            translateZ="60"
+                            className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto text-center"
+                        >
                             Join thousands of users who trust JustPing to keep them updated on the web changes that matter most.
-                        </p>
-                        <Link to="/navigate">
-                            <Button size="lg" className="text-lg px-8 py-6 rounded-xl">
-                                Start Monitoring Now
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
+                        </CardItem>
+                        <div className="flex justify-center items-center w-full">
+                            <CardItem
+                                translateZ={20}
+                                as="div"
+                                className="flex justify-center"
+                            >
+                                <Link to="/navigate">
+                                    <Button size="lg" className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                                        Start Monitoring Now
+                                    </Button>
+                                </Link>
+                            </CardItem>
+                        </div>
+                    </CardBody>
+                </CardContainer>
             </section>
 
             {/* Footer */}
