@@ -9,6 +9,8 @@ import DashboardHome from './pages/DashboardHome';
 import MonitorList from './pages/MonitorList';
 import Billing from './pages/Billing';
 import Alerts from './pages/Alerts';
+import Analytics from './pages/Analytics';
+import Integrations from './pages/Integrations';
 import NotFound from './pages/NotFound';
 import './index.css';
 import ProtectedRoute from './components/protected-route';
@@ -31,6 +33,8 @@ function AppRoutes() {
             <Route path="pinning" element={<ElementSelector />} />
             <Route path="billing" element={<Billing />} />
             <Route path="alerts" element={<Alerts />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="integrations" element={<Integrations />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFound />} />

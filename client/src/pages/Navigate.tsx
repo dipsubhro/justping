@@ -22,6 +22,10 @@ export default function Navigate() {
                 return 'Pricing';
             case '/navigate/alerts':
                 return 'Alerts';
+            case '/navigate/analytics':
+                return 'Analytics';
+            case '/navigate/integrations':
+                return 'Integrations';
             default:
                 return 'Dashboard';
         }
@@ -38,7 +42,7 @@ export default function Navigate() {
                         <span className="font-medium text-foreground">{getPageTitle(location.pathname)}</span>
                     </nav>
                 </header>
-                <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+                <div className="flex-1 flex flex-col overflow-y-auto min-w-0">
                     <Outlet />
                 </div>
             </SidebarInset>

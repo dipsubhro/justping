@@ -28,9 +28,9 @@ const mainItems = [
     { title: "Dashboard", url: "/navigate", icon: Home },
     { title: "Monitors", url: "/navigate/monitors", icon: Monitor },
     { title: "Create Monitor", url: "/navigate/pinning", icon: Pin },
-    { title: "Analytics", url: "#", icon: BarChart },
+    { title: "Analytics", url: "/navigate/analytics", icon: BarChart },
     { title: "Alerts", url: "/navigate/alerts", icon: Bell },
-    { title: "Integrations", url: "#", icon: Plug },
+    { title: "Integrations", url: "/navigate/integrations", icon: Plug },
 ]
 
 const footerItems = [
