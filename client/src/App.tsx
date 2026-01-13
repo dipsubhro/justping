@@ -9,6 +9,7 @@ import DashboardHome from './pages/DashboardHome';
 import MonitorList from './pages/MonitorList';
 import Billing from './pages/Billing';
 import Alerts from './pages/Alerts';
+import NotFound from './pages/NotFound';
 import './index.css';
 import ProtectedRoute from './components/protected-route';
 
@@ -32,6 +33,7 @@ function AppRoutes() {
             <Route path="alerts" element={<Alerts />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       
       {backgroundLocation && (
