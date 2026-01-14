@@ -1,17 +1,64 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate as RouteNavigate } from 'react-router-dom';
 import Landing from './pages/Landing';
-import Pinning from './pages/Pinning';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import LoginModal from './components/LoginModal';
+import ElementSelector from './components/ElementSelector';
+import Navigate from './pages/Navigate';
+import DashboardHome from './pages/DashboardHome';
+import MonitorList from './pages/MonitorList';
+import Billing from './pages/Billing';
+import Alerts from './pages/Alerts';
+import Analytics from './pages/Analytics';
+import Integrations from './pages/Integrations';
+import NotFound from './pages/NotFound';
 import './index.css';
+// import ProtectedRoute from './components/protected-route';
+import { DemoProvider } from './context/DemoContext';
+
+function AppRoutes() {
+  const location = useLocation();
+  const state = location.state as { backgroundLocation?: Location };
+  const backgroundLocation = state?.backgroundLocation;
+
+  return (
+    <>
+      <Routes location={backgroundLocation || location}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        {/* <Route element={<ProtectedRoute />}> */}
+          <Route path="/navigate" element={<Navigate />}>
+            <Route index element={<RouteNavigate to="analytics" replace />} />
+            <Route path="dashboard" element={<DashboardHome />} />
+            <Route path="monitors" element={<MonitorList />} />
+            <Route path="pinning" element={<ElementSelector />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="integrations" element={<Integrations />} />
+          </Route>
+        {/* </Route> */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      
+      {backgroundLocation && (
+        <Routes>
+          <Route path="/login" element={<LoginModal />} />
+        </Routes>
+      )}
+    </>
+  );
+}
+
+
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/pinning" element={<Pinning />} />
-        {/* <Route path="/pricing" element={<ComingSoon page="Pricing" />} />
-        <Route path="/dashboard" element={<ComingSoon page="Dashboard" />} /> */}
-      </Routes>
+      <DemoProvider>
+        <AppRoutes />
+      </DemoProvider>
     </BrowserRouter>
   );
 }

@@ -1,0 +1,40 @@
+# Start of universal .gitignore
+
+# General
+.env
+.DS_Store
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS / Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.exe
+
+# Backend
+backend/server
+backend/README.md
+
+# Client
+client/dist
+client/dist-ssr
+client/*.local
+client/theme.json
+client/waitlist.json
+
+# Auth
+# (Auth ignores are covered by General .env and node_modules)
