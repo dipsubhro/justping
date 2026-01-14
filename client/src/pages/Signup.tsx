@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { authClient } from "@/lib/auth-client"
+import { DemoCTA } from "@/components/demo-cta"
 
 export default function Signup() {
   const [name, setName] = useState("")
@@ -160,8 +161,8 @@ export default function Signup() {
         </div>
       </div>
 
-      {/* Right Column: Muted Empty Panel */}
-      <div className="hidden bg-muted lg:block" />
+      {/* Right Column: Minimal Demo CTA */}
+      <DemoCTA />
     </div>
   )
 }

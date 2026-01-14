@@ -1,5 +1,5 @@
 import { LoginForm } from "@/components/login-form"
-
+import { DemoCTA } from "@/components/demo-cta"
 
 export default function Login() {
   return (
@@ -17,7 +17,7 @@ export default function Login() {
           <LoginForm />
         </div>
       </div>
-      <div className="hidden bg-muted lg:block" />
+      <DemoCTA />
     </div>
   )
 }

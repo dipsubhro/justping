@@ -1,8 +1,14 @@
 import { authClient } from "@/lib/auth-client";
 import { Navigate, Outlet } from "react-router-dom";
+import { useDemo } from "@/context/DemoContext";
 
 export default function ProtectedRoute() {
     const { data: session, isPending, error } = authClient.useSession();
+    const { isDemoMode } = useDemo();
+
+    if (isDemoMode) {
+        return <Outlet />;
+    }
 
     if (isPending) {
         return (
