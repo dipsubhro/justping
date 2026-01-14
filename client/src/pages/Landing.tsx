@@ -7,6 +7,7 @@ import { ContainerScroll } from "@/components/ui/container-scroll";
 import { TypewriterRotate } from "@/components/ui/typewriter-effect";
 import { useDemo } from "@/context/DemoContext";
 import { useNavigate } from "react-router-dom";
+import analyticsImage from '@/assets/images/analytics.png';
 
 
 export default function Landing() {
@@ -121,7 +122,7 @@ export default function Landing() {
                 }
             >
                 <img
-                    src="/src/assets/images/analytics.png"
+                    src={analyticsImage}
                     alt="Analytics Dashboard"
                     className="mx-auto rounded-2xl object-cover h-full w-full object-left-top"
                     draggable={false}

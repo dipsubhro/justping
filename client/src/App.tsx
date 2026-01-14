@@ -13,7 +13,7 @@ import Analytics from './pages/Analytics';
 import Integrations from './pages/Integrations';
 import NotFound from './pages/NotFound';
 import './index.css';
-// import ProtectedRoute from './components/protected-route';
+import ProtectedRoute from './components/protected-route';
 import { DemoProvider } from './context/DemoContext';
 
 function AppRoutes() {
@@ -27,7 +27,7 @@ function AppRoutes() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<ProtectedRoute />}>
           <Route path="/navigate" element={<Navigate />}>
             <Route index element={<RouteNavigate to="analytics" replace />} />
             <Route path="dashboard" element={<DashboardHome />} />
@@ -38,7 +38,7 @@ function AppRoutes() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="integrations" element={<Integrations />} />
           </Route>
-        {/* </Route> */}
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
       
