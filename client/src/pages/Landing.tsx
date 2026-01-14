@@ -4,6 +4,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Bell, Clock, Eye, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
 
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+import { ContainerScroll } from "@/components/ui/container-scroll";
 
 
 export default function Landing() {
@@ -75,93 +76,26 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Features Section */}
-            <section className="container mx-auto px-6 py-20 bg-muted/30">
-                <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16">
+            {/* Features Section with ContainerScroll */}
+            <ContainerScroll
+                titleComponent={
+                    <>
                         <h2 className="text-3xl md:text-5xl font-bold mb-4">
                             Everything you need to stay updated
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                             Powerful monitoring tools that work automatically in the background
                         </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <Eye className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Visual Element Selection</CardTitle>
-                                <CardDescription>
-                                    Point and click to select any element on any webpage. No coding required.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <Clock className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Flexible Scheduling</CardTitle>
-                                <CardDescription>
-                                    Check every 5 minutes, hourly, or daily. You control the monitoring frequency.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <Bell className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Instant Alerts</CardTitle>
-                                <CardDescription>
-                                    Get notified via email, Slack, or webhook the moment something changes.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <Zap className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Smart Detection</CardTitle>
-                                <CardDescription>
-                                    Advanced change detection filters out noise and tracks only meaningful updates.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <CheckCircle2 className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Change History</CardTitle>
-                                <CardDescription>
-                                    View complete history of all detected changes with timestamps and snapshots.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="border-2 hover:border-primary/50 transition-colors">
-                            <CardHeader>
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                    <ArrowRight className="h-6 w-6 text-primary" />
-                                </div>
-                                <CardTitle>Easy Setup</CardTitle>
-                                <CardDescription>
-                                    Start monitoring in under 60 seconds. No technical knowledge required.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-                    </div>
-                </div>
-            </section>
+                    </>
+                }
+            >
+                <img
+                    src="/src/assets/images/analytics.png"
+                    alt="Analytics Dashboard"
+                    className="mx-auto rounded-2xl object-cover h-full w-full object-left-top"
+                    draggable={false}
+                />
+            </ContainerScroll>
 
             {/* How It Works */}
             <section className="container mx-auto px-6 py-20">
