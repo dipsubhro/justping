@@ -4,17 +4,27 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertCircle, Bell, CheckCircle2, Loader2 } from "lucide-react";
 import { fetchAlerts, markAlertsAsChecked, type Alert } from "@/api/alerts";
+import { useDemo } from "@/context/DemoContext";
 
 export default function Alerts() {
     const [alerts, setAlerts] = useState<Alert[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { isDemoMode, demoAlerts } = useDemo();
 
     useEffect(() => {
         const loadAlerts = async () => {
             try {
                 setLoading(true);
                 
+                if (isDemoMode) {
+                    // Simulate network delay
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    setAlerts(demoAlerts);
+                    setLoading(false);
+                    return;
+                }
+
                 // Fetch alerts
                 const data = await fetchAlerts();
                 setAlerts(data);
@@ -31,7 +41,7 @@ export default function Alerts() {
         };
 
         loadAlerts();
-    }, []);
+    }, [isDemoMode]);
 
     // Format relative time
     const formatRelativeTime = (dateStr: string) => {

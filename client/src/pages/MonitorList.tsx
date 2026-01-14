@@ -6,19 +6,31 @@ import { Clock, RefreshCw, ArrowRight, Plus, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { monitorApi, type Monitor } from "@/api/monitors"
 
+import { useDemo } from '@/context/DemoContext';
+
 export default function MonitorList() {
+    const { isDemoMode, demoMonitors } = useDemo();
     const [monitors, setMonitors] = useState<Monitor[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         loadMonitors()
-    }, [])
+    }, [isDemoMode]) // Reload if mode changes
 
     const loadMonitors = async () => {
         try {
             setLoading(true)
             setError(null)
+            
+            if (isDemoMode) {
+                // Simulate network delay for realism
+                await new Promise(resolve => setTimeout(resolve, 600));
+                setMonitors(demoMonitors)
+                setLoading(false)
+                return;
+            }
+
             const data = await monitorApi.getMonitors()
             setMonitors(data)
         } catch (err) {

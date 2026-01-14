@@ -1,13 +1,23 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Bell, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Bell, Zap, CheckCircle2, ArrowRight, ChevronsDown } from 'lucide-react';
 
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { ContainerScroll } from "@/components/ui/container-scroll";
 import { TypewriterRotate } from "@/components/ui/typewriter-effect";
+import { useDemo } from "@/context/DemoContext";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Landing() {
+    const { toggleDemoMode } = useDemo();
+    const navigate = useNavigate();
+
+    const handleDemoClick = () => {
+        toggleDemoMode(true);
+        navigate('/navigate');
+    };
+
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
@@ -68,7 +78,12 @@ export default function Landing() {
                                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </Link>
-                        <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-xl">
+                        <Button 
+                            size="lg" 
+                            variant="outline" 
+                            className="text-lg px-8 py-6 rounded-xl"
+                            onClick={handleDemoClick}
+                        >
                             View Demo
                         </Button>
                     </div>
@@ -83,6 +98,12 @@ export default function Landing() {
                             Free forever plan
                         </div>
                     </div>
+                </div>
+                {/* Scroll Down Indicator */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-muted-foreground">
+                    <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full animate-bounce hover:bg-transparent hover:text-primary">
+                        <ChevronsDown className="h-6 w-6" />
+                    </Button>
                 </div>
             </section>
 

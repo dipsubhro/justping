@@ -4,10 +4,14 @@ import {
     SidebarTrigger,
     SidebarInset,
 } from "@/components/ui/sidebar"
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { useDemo } from "@/context/DemoContext"
+import { Button } from "@/components/ui/button"
 
 export default function Navigate() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { isDemoMode, resetDemo } = useDemo();
     
     const getPageTitle = (pathname: string) => {
         switch (pathname) {
@@ -46,6 +50,18 @@ export default function Navigate() {
                     <Outlet />
                 </div>
             </SidebarInset>
+
+            {isDemoMode && (
+                <div className="fixed bottom-6 right-6 z-50">
+                    <Button 
+                        variant="destructive" 
+                        className="shadow-lg rounded-full px-6 animate-in fade-in slide-in-from-bottom-4"
+                        onClick={() => { resetDemo(); navigate('/'); }}
+                    >
+                        Exit Demo Mode
+                    </Button>
+                </div>
+            )}
         </SidebarProvider>
     );
 }

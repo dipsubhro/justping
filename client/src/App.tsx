@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate as RouteNavigate } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -14,6 +14,7 @@ import Integrations from './pages/Integrations';
 import NotFound from './pages/NotFound';
 import './index.css';
 // import ProtectedRoute from './components/protected-route';
+import { DemoProvider } from './context/DemoContext';
 
 function AppRoutes() {
   const location = useLocation();
@@ -28,7 +29,8 @@ function AppRoutes() {
         <Route path="/signup" element={<Signup />} />
         {/* <Route element={<ProtectedRoute />}> */}
           <Route path="/navigate" element={<Navigate />}>
-            <Route index element={<DashboardHome />} />
+            <Route index element={<RouteNavigate to="analytics" replace />} />
+            <Route path="dashboard" element={<DashboardHome />} />
             <Route path="monitors" element={<MonitorList />} />
             <Route path="pinning" element={<ElementSelector />} />
             <Route path="billing" element={<Billing />} />
@@ -49,10 +51,14 @@ function AppRoutes() {
   );
 }
 
+
+
 export default function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <DemoProvider>
+        <AppRoutes />
+      </DemoProvider>
     </BrowserRouter>
   );
 }

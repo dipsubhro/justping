@@ -8,7 +8,7 @@ import {
     CreditCard,
     LogOut
 } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { authClient } from "@/lib/auth-client"
 
 import {
@@ -25,7 +25,7 @@ import {
 
 // Menu items grouped structure
 const mainItems = [
-    { title: "Dashboard", url: "/navigate", icon: Home },
+    { title: "Dashboard", url: "/navigate/dashboard", icon: Home },
     { title: "Monitors", url: "/navigate/monitors", icon: Monitor },
     { title: "Create Monitor", url: "/navigate/pinning", icon: Pin },
     { title: "Analytics", url: "/navigate/analytics", icon: BarChart },
@@ -40,6 +40,8 @@ const footerItems = [
 
 export function AppSidebar() {
     const navigate = useNavigate()
+    const location = useLocation()
+    const pathname = location.pathname
 
     const handleSignOut = async () => {
         await authClient.signOut()
@@ -63,7 +65,10 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {mainItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton 
+                                        asChild 
+                                        isActive={pathname === item.url || (item.url === "/navigate" && pathname === "/navigate/dashboard")}
+                                    >
                                         <Link to={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
