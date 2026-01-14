@@ -1,9 +1,0 @@
-.env
-server
-*.exe
-README.md
-
-export CHANGEDETECTION_API_KEY=your_api_key_here
-export MONGODB_URI=mongodb://localhost:27017
-export AUTH_SERVICE_URL=http://localhost:8787
-go run cmd/api/main.go
