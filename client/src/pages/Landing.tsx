@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bell, Clock, Eye, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Bell, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
 
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { ContainerScroll } from "@/components/ui/container-scroll";
+import { TypewriterRotate } from "@/components/ui/typewriter-effect";
 
 
 export default function Landing() {
@@ -46,9 +46,19 @@ export default function Landing() {
                         </span>
                     </h1>
                     
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        Track price changes, stock availability, content updates, and more.
-                        Get instant notifications when something changes.
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed h-8">
+                        <TypewriterRotate
+                            phrases={[
+                                "Track price drops in real time",
+                                "Get notified when products restock",
+                                "Monitor career page updates",
+                                "Watch competitor price changes",
+                                "Instant alerts when anything changes",
+                            ]}
+                            typingSpeed={60}
+                            deletingSpeed={30}
+                            pauseDuration={2000}
+                        />
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
