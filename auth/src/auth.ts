@@ -8,7 +8,7 @@ export const auth = betterAuth({
 
     secret: process.env.BETTER_AUTH_SECRET!,
 
-    baseURL: `http://localhost:${process.env.PORT || 8787}`,
+    baseURL: process.env.BASE_URL || `http://localhost:${process.env.PORT || 8787}`,
     
     emailAndPassword: {
         enabled: true,
