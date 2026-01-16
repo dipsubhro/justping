@@ -1,0 +1,85 @@
+services:
+  # MongoDB - Internal only (no port exposed)
+  mongodb:
+    image: mongo:7
+    container_name: justping-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - justping-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # changedetection.io - Internal only (no port exposed)
+  changedetection:
+    image: dgtlmoon/changedetection.io:latest
+    container_name: justping-changedetection
+    restart: unless-stopped
+    environment:
+      - PLAYWRIGHT_DRIVER_URL=
+      - BASE_URL=http://changedetection:5000
+    volumes:
+      - changedetection_data:/datastore
+    networks:
+      - justping-network
+    depends_on:
+      - mongodb
+
+  # Auth Service (Node/Express) - Publicly exposed on port 8787
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: justping-auth
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/justping
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - PORT=8787
+      - TRUSTED_ORIGINS=${TRUSTED_ORIGINS}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    networks:
+      - justping-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # Backend API (Go) - Publicly exposed on port 3002
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: justping-backend
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - CHANGEDETECTION_API_KEY=${CHANGEDETECTION_API_KEY}
+      - MONGODB_URI=mongodb://mongodb:27017
+      - AUTH_SERVICE_URL=http://auth:8787
+      - CHANGEDETECTION_BASE_URL=http://changedetection:5000
+    networks:
+      - justping-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      auth:
+        condition: service_started
+      changedetection:
+        condition: service_started
+
+networks:
+  justping-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  changedetection_data:

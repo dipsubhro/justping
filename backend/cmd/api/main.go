@@ -47,6 +47,16 @@ func main() {
 
 	// Existing watch route
 	http.HandleFunc("/api/watch", handleWatch)
+
+	// Health check endpoint
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{
+			"status":  "healthy",
+			"service": "justping-backend",
+		})
+	})
 	
 	port := "3002"
 	log.Printf("Server starting on port %s\n", port)
