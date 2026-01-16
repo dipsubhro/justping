@@ -18,5 +18,5 @@ COPY . .
 # Expose port
 EXPOSE 8787
 
-# Run with tsx (TypeScript execution)
-CMD ["pnpm", "run", "dev"]
+# Run with tsx directly (not using npm script to avoid --env-file issue)
+CMD ["npx", "tsx", "src/index.ts"]
