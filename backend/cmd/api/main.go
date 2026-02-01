@@ -10,6 +10,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type WatchRequest struct {
@@ -17,14 +19,19 @@ type WatchRequest struct {
 }
 
 type DebugResponse struct {
-	ReceivedURL          string `json:"received_url"`
-	ChangeDetectionURL   string `json:"changedetection_url"`
+	ReceivedURL           string `json:"received_url"`
+	ChangeDetectionURL    string `json:"changedetection_url"`
 	ChangeDetectionStatus int    `json:"changedetection_status"`
-	ChangeDetectionBody  string `json:"changedetection_body"`
-	Error                string `json:"error,omitempty"`
+	ChangeDetectionBody   string `json:"changedetection_body"`
+	Error                 string `json:"error,omitempty"`
 }
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
+
 	// Connect to MongoDB
 	mongoURI := os.Getenv("MONGODB_URI")
 	if mongoURI == "" {

@@ -38,3 +38,5 @@ client/waitlist.json
 
 # Auth
 # (Auth ignores are covered by General .env and node_modules)
+logs
+
