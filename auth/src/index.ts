@@ -7,13 +7,7 @@ import { auth } from './auth.js'
 const app = express()
 const port = Number(process.env.PORT) || 8787
 
-app.use(express.json())
-
-app.get('/health', (req, res) => {
-    console.log('Health check requested');
-    res.send('Auth service is healthy')
-})
-
+// CORS must come BEFORE body parser
 app.use(cors({
     origin: process.env.TRUSTED_ORIGINS?.split(',') || [
         'http://localhost:5173',
@@ -24,7 +18,12 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 
+app.use(express.json())
 
+app.get('/health', (req, res) => {
+    console.log('Health check requested');
+    res.send('Auth service is healthy')
+})
 
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from ${req.headers.origin}`);
