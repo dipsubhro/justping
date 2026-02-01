@@ -7,6 +7,7 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useDemo } from "@/context/DemoContext"
 import { Button } from "@/components/ui/button"
+import { ProfileButton } from "@/components/ProfileButton"
 
 export default function Navigate() {
     const location = useLocation();
@@ -42,9 +43,10 @@ export default function Navigate() {
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" />
                     <div className="h-4 w-px bg-border mx-2" />
-                    <nav className="flex items-center gap-2 text-sm">
+                    <nav className="flex items-center gap-2 text-sm flex-1">
                         <span className="font-medium text-foreground">{getPageTitle(location.pathname)}</span>
                     </nav>
+                    <ProfileButton />
                 </header>
                 <div className="flex-1 flex flex-col overflow-y-auto min-w-0">
                     <Outlet />
