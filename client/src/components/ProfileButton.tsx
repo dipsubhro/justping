@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { User, LogOut, Mail, AtSign } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { useNavigate } from "react-router-dom"
@@ -47,8 +47,10 @@ function getGradientFromName(name: string): string {
 }
 
 export function ProfileButton() {
-    const [user, setUser] = useState<UserData | null>(null)
-    const [loading, setLoading] = useState(true)
+    // Use the reactive session hook instead of manual fetching
+    const { data: session, isPending } = authClient.useSession()
+    const user = session?.user as UserData | undefined
+    
     const [signInOpen, setSignInOpen] = useState(false)
     const [signInLoading, setSignInLoading] = useState(false)
     const [signInError, setSignInError] = useState<string | null>(null)
@@ -56,26 +58,8 @@ export function ProfileButton() {
     const [password, setPassword] = useState("")
     const navigate = useNavigate()
 
-    // Fetch user session on mount
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const session = await authClient.getSession()
-                if (session?.data?.user) {
-                    setUser(session.data.user as UserData)
-                }
-            } catch (error) {
-                console.error("Failed to fetch user session:", error)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchUser()
-    }, [])
-
     const handleSignOut = async () => {
         await authClient.signOut()
-        setUser(null)
         navigate("/")
     }
 
@@ -87,14 +71,10 @@ export function ProfileButton() {
         await authClient.signIn.email(
             { email, password },
             {
-                onSuccess: async () => {
+                onSuccess: () => {
                     setSignInLoading(false)
                     setSignInOpen(false)
-                    // Refresh user data
-                    const session = await authClient.getSession()
-                    if (session?.data?.user) {
-                        setUser(session.data.user as UserData)
-                    }
+                    // Session will be updated reactively via useSession hook
                     setEmail("")
                     setPassword("")
                 },
@@ -144,7 +124,7 @@ export function ProfileButton() {
         )
     }
 
-    if (loading) {
+    if (isPending) {
         return (
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
         )
