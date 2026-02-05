@@ -7,6 +7,7 @@ import (
 	"io"
 	"justping/backend/internal/database"
 	"justping/backend/internal/handlers"
+	"justping/backend/internal/renderer"
 	"log"
 	"net/http"
 	"os"
@@ -32,6 +33,10 @@ func main() {
 		log.Println("No .env file found, using system environment variables")
 	}
 
+	// Start headless browser (go-rod)
+	renderer.InitBrowser()
+	defer renderer.CloseBrowser()
+
 	// Connect to MongoDB
 	mongoURI := os.Getenv("MONGODB_URI")
 	if mongoURI == "" {
@@ -54,6 +59,9 @@ func main() {
 
 	// Existing watch route
 	http.HandleFunc("/api/watch", handleWatch)
+
+	// Headless-browser render endpoint
+	http.HandleFunc("/api/render", handlers.HandleRender)
 
 	// Health check endpoint
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
