@@ -23,14 +23,7 @@ interface PinnedElement {
   tagName: string;
 }
 
-// CORS proxy to bypass cross-origin restrictions
-const CORS_PROXIES = [
-  'https://corsproxy.io/?key=d655d270&url=',
-  'https://api.allorigins.win/raw?url=',
-  'https://api.codetabs.com/v1/proxy?quest=',
-  'https://thingproxy.freeboard.io/fetch/',
-  'https://cors-anywhere.herokuapp.com/',
-];
+
 
 export default function ElementSelector() {
   const [url, setUrl] = useState('');
@@ -156,46 +149,36 @@ export default function ElementSelector() {
     }
   }, [getElementRect]);
 
-  // Fetch URL content via CORS proxy
-  const fetchViaProxy = useCallback(async (targetUrl: string): Promise<string> => {
-    let lastError;
+  // Fetch URL content via backend renderer
+  const fetchRenderedHTML = useCallback(async (targetUrl: string): Promise<string> => {
+    console.log(`Attempting to render via backend: ${targetUrl}`);
+    setLoadingStatus('Rendering via backend...');
 
-    console.log(`Attempting to fetch: ${targetUrl}`);
+    try {
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002'}/api/render?url=${encodeURIComponent(targetUrl)}`;
+      const response = await fetch(apiUrl);
+      console.log(`Response from backend: ${response.status} ${response.statusText}`);
 
-    for (const proxy of CORS_PROXIES) {
-      try {
-        const proxyName = new URL(proxy).hostname;
-        const fullUrl = proxy + encodeURIComponent(targetUrl);
-        console.log(`Trying proxy: ${proxyName} -> ${fullUrl}`);
-        setLoadingStatus(`Trying proxy: ${proxyName}...`);
-
-        const response = await fetch(fullUrl);
-        console.log(`Response from ${proxyName}: ${response.status} ${response.statusText}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const html = await response.text();
-        console.log(`Received ${html.length} bytes from ${proxyName}`);
-
-        if (!html || html.length < 100) {
-          throw new Error('Empty or invalid response');
-        }
-
-        // Rewrite relative URLs to absolute
-        const baseUrl = new URL(targetUrl);
-        const rewrittenHtml = rewriteUrls(html, baseUrl);
-
-        return rewrittenHtml;
-      } catch (err) {
-        console.warn(`Proxy ${proxy} failed:`, err);
-        lastError = err;
-        continue;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
       }
-    }
 
-    throw lastError || new Error('All proxies failed');
+      const html = await response.text();
+      console.log(`Received ${html.length} bytes from backend`);
+
+      if (!html || html.length < 100) {
+        throw new Error('Empty or invalid response');
+      }
+
+      // Rewrite relative URLs to absolute
+      const baseUrl = new URL(targetUrl);
+      const rewrittenHtml = rewriteUrls(html, baseUrl);
+
+      return rewrittenHtml;
+    } catch (err) {
+      console.error('Backend render failed:', err);
+      throw err;
+    }
   }, []);
 
   // Rewrite relative URLs in HTML to absolute URLs
@@ -268,15 +251,15 @@ export default function ElementSelector() {
     setLoadedUrl(normalizedUrl);
 
     try {
-      const html = await fetchViaProxy(normalizedUrl);
+      const html = await fetchRenderedHTML(normalizedUrl);
       setProxyContent(html);
       setLoadingStatus('Rendering...');
     } catch (err) {
-      console.error('Failed to fetch via proxy:', err);
-      setError('Failed to load page. The site may block proxies.');
+      console.error('Failed to fetch via backend renderer:', err);
+      setError('Failed to load page. The server could not render it.');
       setIsLoading(false);
     }
-  }, [url, fetchViaProxy]);
+  }, [url, fetchRenderedHTML]);
 
   // Write proxy content to iframe
   useEffect(() => {
