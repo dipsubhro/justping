@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import {
     Home,
     Monitor,
@@ -10,6 +11,8 @@ import {
 } from "lucide-react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { authClient } from "@/lib/auth-client"
+import { fetchAlerts, type Alert } from "@/api/alerts"
+import { useDemo } from "@/context/DemoContext"
 
 import {
     Sidebar,
@@ -43,6 +46,27 @@ export function AppSidebar() {
     const location = useLocation()
     const pathname = location.pathname
 
+    const { isDemoMode, demoAlerts } = useDemo()
+    const [hasUnreadAlerts, setHasUnreadAlerts] = useState(false)
+
+    useEffect(() => {
+        const checkAlerts = async () => {
+            try {
+                let currentAlerts: Alert[] = [];
+                if (isDemoMode) {
+                    currentAlerts = demoAlerts;
+                } else {
+                    currentAlerts = await fetchAlerts();
+                }
+                setHasUnreadAlerts(currentAlerts.some((a: Alert) => !a.checked));
+            } catch (err) {
+                console.error("Failed to fetch alerts for sidebar indicator", err);
+            }
+        };
+
+        checkAlerts();
+    }, [isDemoMode, demoAlerts, pathname]);
+
     const handleSignOut = async () => {
         await authClient.signOut()
         navigate('/')
@@ -70,7 +94,15 @@ export function AppSidebar() {
                                         isActive={pathname === item.url || (item.url === "/navigate" && pathname === "/navigate/dashboard")}
                                     >
                                         <Link to={item.url}>
-                                            <item.icon />
+                                            <div className="relative flex items-center justify-center">
+                                                <item.icon />
+                                                {item.title === "Alerts" && hasUnreadAlerts && (
+                                                    <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                                    </span>
+                                                )}
+                                            </div>
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
