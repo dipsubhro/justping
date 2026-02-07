@@ -5,7 +5,7 @@ import { Fragment, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -22,26 +22,26 @@ import {
 
 const plans = [
   {
-    title: "Free",
-    price: { monthly: "$9", annually: "$9" },
+    title: "Hobby",
+    price: { monthly: "₹0", annually: "₹0" },
     href: "#",
     recommended: false,
   },
   {
-    title: "Basic",
-    price: { monthly: "$50", annually: "$45" },
+    title: "Pro",
+    price: { monthly: "₹499", annually: "₹399" },
     href: "#",
     recommended: false,
   },
   {
-    title: "Team",
-    price: { monthly: "$100", annually: "$90" },
+    title: "Premium",
+    price: { monthly: "₹999", annually: "₹799" },
     href: "#",
     recommended: true,
   },
   {
     title: "Enterprise",
-    price: { monthly: "$200", annually: "$160" },
+    price: { monthly: "Custom", annually: "Custom" },
     href: "#",
     recommended: false,
   },
@@ -49,128 +49,117 @@ const plans = [
 
 const featureMatrix = [
   {
-    title: "Overview",
+    title: "Core Monitoring",
     features: [
       {
-        title: "Always included reature",
+        title: "Number of monitors",
+        info: "How many pages you can monitor at once",
         inclusions: [
-          {
-            plan: "Free",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-          },
-          {
-            plan: "Basic",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-          },
-          {
-            plan: "Teams",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-          },
-          {
-            plan: "Enterprise",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-          },
-        ],
-      },
-      {
-        title: "Number of products",
-        info: "Help text",
-        inclusions: [
-          { plan: "Free", content: "1" },
-          { plan: "Basic", content: "1" },
-          { plan: "Teams", content: "3" },
-          { plan: "Enterprise", content: "5" },
-        ],
-      },
-      {
-        title: "Number of transactions",
-        info: "Help text",
-        inclusions: [
-          { plan: "Free", content: "30 monthly" },
-          { plan: "Basic", content: "Unlimited" },
-          { plan: "Teams", content: "Unlimited" },
+          { plan: "Hobby", content: "1 monitor" },
+          { plan: "Pro", content: "15 monitors" },
+          { plan: "Premium", content: "75 monitors" },
           { plan: "Enterprise", content: "Unlimited" },
+        ],
+      },
+      {
+        title: "Check frequency",
+        info: "How often we check your tracked pages for changes",
+        inclusions: [
+          { plan: "Hobby", content: "Every 24 hours" },
+          { plan: "Pro", content: "Every 1 hour" },
+          { plan: "Premium", content: "Every 5 minutes" },
+          { plan: "Enterprise", content: "Down to 1 minute" },
+        ],
+      },
+      {
+        title: "History retention",
+        info: "How long we keep snapshots of changes",
+        inclusions: [
+          { plan: "Hobby", content: "7 days" },
+          { plan: "Pro", content: "30 days" },
+          { plan: "Premium", content: "90 days" },
+          { plan: "Enterprise", content: "Unlimited history" },
         ],
       },
     ],
   },
   {
-    title: "Other features",
+    title: "Advanced Features",
     features: [
       {
-        title: "Basic feature",
+        title: "Visual selector tool",
+        info: "Point and click to select elements to track",
         inclusions: [
-          {
-            plan: "Free",
-            content: <Check className="size-4 lg:size-5" />,
-          },
-          {
-            plan: "Basic",
-            content: <Check className="size-4 lg:size-5" />,
-          },
-          {
-            plan: "Teams",
-            content: <Check className="size-4 lg:size-5" />,
-          },
-          {
-            plan: "Enterprise",
-            content: <Check className="size-4 lg:size-5" />,
-          },
+          { plan: "Hobby", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Pro", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
         ],
       },
       {
-        title: "Enterprise feature",
-        info: "Hello",
+        title: "JavaScript rendering",
+        info: "Track single page applications (React, Vue, etc.)",
         inclusions: [
-          {
-            plan: "Free",
-            content: <X className="size-4 text-muted-foreground lg:size-5" />,
-          },
-          {
-            plan: "Basic",
-            content: <X className="size-4 text-muted-foreground lg:size-5" />,
-          },
-          {
-            plan: "Teams",
-            content: <X className="size-4 text-muted-foreground lg:size-5" />,
-          },
-          {
-            plan: "Enterprise",
-            content: <Check className="size-5" />,
-          },
+          { plan: "Hobby", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Pro", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
         ],
       },
       {
-        title: "Optional feature",
-        info: "Hello",
+        title: "Proxy rotation",
+        info: "Avoid being blocked by tracked sites",
         inclusions: [
-          {
-            plan: "Free",
-            content: <X className="size-4 text-muted-foreground lg:size-5" />,
-          },
-          {
-            plan: "Basic",
-            content: <X className="size-4 text-muted-foreground lg:size-5" />,
-          },
-          {
-            plan: "Teams",
-            content: <Badge>Add-on</Badge>,
-          },
-          {
-            plan: "Enterprise",
-            content: <Badge>Add-on</Badge>,
-          },
+          { plan: "Hobby", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Pro", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Notifications",
+    features: [
+      {
+        title: "In-App Alerts",
+        info: "View alerts from the JustPing dashboard",
+        inclusions: [
+          { plan: "Hobby", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Pro", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
+        ],
+      },
+      {
+        title: "Email Notifications",
+        info: "Get notified directly in your inbox",
+        inclusions: [
+          { plan: "Hobby", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Pro", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
+        ],
+      },
+      {
+        title: "Webhooks & Discord",
+        info: "Ping external services or team chat applications",
+        inclusions: [
+          { plan: "Hobby", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Pro", content: <X className="size-4 text-muted-foreground lg:size-5" /> },
+          { plan: "Premium", content: <Check className="size-4 lg:size-5" /> },
+          { plan: "Enterprise", content: <Check className="size-4 lg:size-5" /> },
         ],
       },
     ],
   },
 ];
 
-interface Pricing11Props {
+interface PricingProps {
   className?: string;
 }
 
-const Pricing11 = ({ className }: Pricing11Props) => {
+const Pricing = ({ className }: PricingProps) => {
   const [billing, setBilling] = useState<"monthly" | "annually">("monthly");
   return (
     <section className={cn("py-10", className)}>
@@ -181,7 +170,7 @@ const Pricing11 = ({ className }: Pricing11Props) => {
               Pricing Plans
             </h1>
             <p className="text-muted-foreground lg:text-xl">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Choose the perfect plan for your tracking needs. Upgrade anytime as your monitors grow.
             </p>
           </div>
         </div>
@@ -324,4 +313,4 @@ const Pricing11 = ({ className }: Pricing11Props) => {
   );
 };
 
-export { Pricing11 };
+export { Pricing };
