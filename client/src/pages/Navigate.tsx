@@ -48,7 +48,7 @@ export default function Navigate() {
                     </nav>
                     <ProfileButton />
                 </header>
-                <div className="flex-1 flex flex-col overflow-y-auto min-w-0">
+                <div className="overlay-surface flex-1 flex flex-col overflow-y-auto min-w-0">
                     <Outlet />
                 </div>
             </SidebarInset>

@@ -3,7 +3,7 @@ import { DemoCTA } from "@/components/demo-cta"
 
 export default function Login() {
   return (
-    <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+    <div className="overlay-surface grid min-h-screen grid-cols-1 lg:grid-cols-2">
       <div className="flex flex-col justify-center p-6 md:p-10">
         <div className="mx-auto w-full max-w-[420px] space-y-6">
           <div className="flex flex-col space-y-2 text-center md:text-left">

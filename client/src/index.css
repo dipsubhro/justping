@@ -111,6 +111,60 @@
   }
 }
 
+.overlay-surface {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(circle at center, rgba(235, 255, 250, 0.16) 0 1.4px, transparent 3.8px),
+    radial-gradient(circle at center, rgba(190, 255, 235, 0.08) 0 0.8px, transparent 2.6px),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.012) 0 1px,
+      transparent 1px 4px
+    );
+  background-position:
+    18px 24px,
+    118px 96px,
+    0 0;
+  background-size:
+    190px 190px,
+    220px 220px,
+    180px 180px;
+}
+
+.overlay-surface::before,
+.overlay-surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.overlay-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.overlay-surface::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
+}
+
+.overlay-surface::after {
+  background-image:
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(0, 255, 180, 0.14) 0,
+      rgba(0, 255, 180, 0.09) 18%,
+      rgba(0, 255, 180, 0.04) 34%,
+      transparent 62%
+    );
+}
+
 @keyframes bounce-subtle {
   0%, 100% {
     transform: translateY(0);

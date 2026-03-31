@@ -4,7 +4,7 @@ import { Home } from 'lucide-react';
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-start pt-[20vh] px-6">
+        <div className="overlay-surface min-h-screen bg-background flex flex-col items-center justify-start pt-[20vh] px-6">
             <div className="text-center space-y-6">
                 <h1 className="text-9xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                     404
