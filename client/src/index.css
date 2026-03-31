@@ -114,6 +114,10 @@
 .overlay-surface {
   position: relative;
   isolation: isolate;
+}
+
+.overlay-surface,
+.landing-page-overlay {
   background-image:
     radial-gradient(circle at center, rgba(235, 255, 250, 0.16) 0 1.4px, transparent 3.8px),
     radial-gradient(circle at center, rgba(190, 255, 235, 0.08) 0 0.8px, transparent 2.6px),
@@ -133,7 +137,9 @@
 }
 
 .overlay-surface::before,
-.overlay-surface::after {
+.overlay-surface::after,
+.landing-page-overlay::before,
+.landing-page-overlay::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -154,7 +160,8 @@
   background-position: center center;
 }
 
-.overlay-surface::after {
+.overlay-surface::after,
+.landing-page-overlay::after {
   background-image:
     radial-gradient(
       circle at 50% 18%,
@@ -163,6 +170,28 @@
       rgba(0, 255, 180, 0.04) 34%,
       transparent 62%
     );
+}
+
+.landing-page {
+  position: relative;
+  isolation: isolate;
+}
+
+.landing-page-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.landing-page > main,
+.landing-page > footer {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-page-nav {
+  z-index: 2;
 }
 
 @keyframes bounce-subtle {

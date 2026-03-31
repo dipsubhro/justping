@@ -20,9 +20,10 @@ export default function Landing() {
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="landing-page min-h-screen bg-background">
+            <div aria-hidden="true" className="landing-page-overlay" />
             {/* Header */}
-            <header className="fixed inset-x-0 top-4 z-20 px-4 sm:px-6">
+            <header className="landing-page-nav fixed inset-x-0 top-4 px-4 sm:px-6">
                 <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-background/35 px-5 py-3 shadow-[0_18px_48px_rgba(0,0,0,0.24)] backdrop-blur-xl">
                     <div className="flex items-center gap-2">
                         <Bell className="h-6 w-6 text-primary" />
@@ -41,7 +42,7 @@ export default function Landing() {
                 </div>
             </header>
 
-            <main className="overlay-surface">
+            <main>
                 {/* Hero Section */}
                 <section className="container mx-auto px-6 py-20 md:py-32">
                     <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -224,7 +225,7 @@ export default function Landing() {
             </main>
 
             {/* Footer */}
-            <footer className="border-t mt-20">
+            <footer className="mt-20 border-t bg-background">
                 <div className="container mx-auto px-6 py-12">
                     <div className="grid md:grid-cols-4 gap-8">
                         <div>
@@ -264,9 +265,9 @@ export default function Landing() {
                         </div>
                     </div>
                     
-                    <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
+                    {/* <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
                         © 2026 JustPing. All rights reserved.
-                    </div>
+                    </div> */}
                 </div>
             </footer>
         </div>
